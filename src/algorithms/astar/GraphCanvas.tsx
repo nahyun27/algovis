@@ -233,11 +233,11 @@ export default function GraphCanvas({ step, shortestEdges, customNodes, customEd
 
 
   return (
-    <div className="w-full h-full flex flex-col pt-4 items-center justify-start overflow-auto">
+    <div className="w-full h-full flex flex-col items-center justify-start overflow-auto">
       <svg
         viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
         className="w-full max-w-[600px] h-auto font-sans"
-        style={{ minHeight: '300px' }}
+        style={{ minHeight: '250px' }}
       >
         <defs>
           <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
@@ -251,7 +251,7 @@ export default function GraphCanvas({ step, shortestEdges, customNodes, customEd
         {nodeElements}
       </svg>
       {/* Legend inside canvas */}
-      <div className="w-full px-6 flex flex-wrap justify-center gap-4 text-xs mt-2 pb-4">
+      <div className="w-full px-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs mt-1 pb-4">
         <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-blue-500 ring-2 ring-blue-300"></div>현재 노드</div>
         <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-sky-200 ring-2 ring-sky-300"></div>Open Set</div>
         <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-zinc-400 ring-2 ring-zinc-300"></div>Closed Set</div>

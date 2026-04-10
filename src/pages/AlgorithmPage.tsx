@@ -343,7 +343,7 @@ function DijkstraPage() {
             </div>
 
             <div className="flex-1 flex flex-col bg-muted/5 divide-y divide-border overflow-hidden min-h-0 relative">
-              <div className="w-full flex flex-col relative overflow-y-auto group border-b" style={{ minHeight: '45%' }}>
+              <div className="w-full flex flex-col relative overflow-y-auto group border-b" style={{ minHeight: '40%' }}>
                 <DijkstraGraphCanvas
                   step={step} shortestEdges={shortestEdges}
                   customNodes={customNodes} customEdges={customEdges}
@@ -504,7 +504,7 @@ function AStarPage() {
             </div>
 
             <div className="flex-1 flex flex-col bg-muted/5 divide-y divide-border overflow-hidden min-h-0 relative">
-              <div className="w-full flex flex-col relative overflow-y-auto group border-b" style={{ minHeight: '45%' }}>
+              <div className="w-full flex flex-col relative overflow-y-auto group border-b" style={{ minHeight: '40%' }}>
                 <AStarGraphCanvas
                   step={step} shortestEdges={shortestEdges}
                   customNodes={customNodes} customEdges={customEdges}
