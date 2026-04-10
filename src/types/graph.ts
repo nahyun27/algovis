@@ -69,12 +69,12 @@ export const DIJKSTRA_DEFAULT_GRAPH: GraphData = {
 export const ASTAR_DEFAULT_GRAPH: GraphData = {
   directed: true,
   nodes: [
-    { id: 0, x: 100, y: 200, label: 'S' },
-    { id: 1, x: 200, y: 100, label: '1' },
-    { id: 2, x: 200, y: 300, label: '2' },
-    { id: 3, x: 350, y: 100, label: '3' },
-    { id: 4, x: 350, y: 300, label: '4' },
-    { id: 5, x: 500, y: 200, label: 'G' },
+    { id: 0, x: 100, y: 300, label: 'S' },
+    { id: 1, x: 300, y: 150, label: '1' },
+    { id: 2, x: 300, y: 450, label: '2' },
+    { id: 3, x: 550, y: 150, label: '3' },
+    { id: 4, x: 550, y: 450, label: '4' },
+    { id: 5, x: 750, y: 300, label: 'G' },
   ],
   edges: [
     { id: '0-1', from: 0, to: 1, weight: 7 },

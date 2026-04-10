@@ -20,8 +20,8 @@ export default function GraphCanvas({ step, shortestEdges, customNodes, customEd
     e.weight
   ]);
 
-  const SVG_WIDTH = 600;
-  const SVG_HEIGHT = 450;
+  const SVG_WIDTH = 850;
+  const SVG_HEIGHT = 600;
   const GOAL_NODE = N - 1;
 
   // Render edges
@@ -126,8 +126,8 @@ export default function GraphCanvas({ step, shortestEdges, customNodes, customEd
   // Render nodes
   const nodeElements = useMemo(() => {
     return nodes.map((n) => {
-      let isGoal = n.id === GOAL_NODE;
-      let isStart = n.id === 0;
+      const isGoal = n.id === GOAL_NODE;
+      const isStart = n.id === 0;
 
       let bgColor = 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400';
       let ring = 'ring-zinc-300 dark:ring-zinc-700';
@@ -171,18 +171,18 @@ export default function GraphCanvas({ step, shortestEdges, customNodes, customEd
           <div className="w-full h-full flex flex-col items-center justify-start pt-4 relative group">
             <div
               className={`
-                w-10 h-10 rounded-full flex items-center justify-center
-                font-bold text-sm z-10 transition-all duration-300
+                w-12 h-12 rounded-full flex items-center justify-center
+                font-bold text-base z-10 transition-all duration-300
                 ring-2 ${ring} ${bgColor}
               `}
             >
-              {isGoal ? <Star size={16} className={step.currentProcessingNode === n.id ? 'fill-current' : ''} /> : n.id}
+              {isGoal ? <Star size={18} className={step.currentProcessingNode === n.id ? 'fill-current' : ''} /> : n.id}
             </div>
             
             {/* f, g, h values underneath */}
-            <div className="absolute top-[42px] mt-1 flex flex-col items-center pointer-events-none bg-white/80 dark:bg-zinc-900/80 rounded px-1.5 py-0.5 whitespace-nowrap shadow-sm border border-zinc-200 dark:border-zinc-800 z-20">
-              <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400 leading-tight">f={fStr}</span>
-              <span className="text-[9px] text-muted-foreground leading-tight">g={gStr} h={hStr}</span>
+            <div className="absolute top-[52px] flex flex-col items-center pointer-events-none bg-white/90 dark:bg-zinc-900/90 rounded px-2 py-1 whitespace-nowrap shadow-sm border border-zinc-200 dark:border-zinc-800 z-20">
+              <span className="text-xs font-bold text-purple-600 dark:text-purple-400 leading-tight">f={fStr}</span>
+              <span className="text-[10px] text-muted-foreground leading-tight">g={gStr} h={hStr}</span>
             </div>
             
             {/* Start/Goal labels above */}
