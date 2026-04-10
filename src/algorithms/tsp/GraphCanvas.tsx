@@ -1,4 +1,4 @@
-import { W } from './solver';
+import { W } from './shared';
 
 interface GraphCanvasProps {
   currentMask: number;

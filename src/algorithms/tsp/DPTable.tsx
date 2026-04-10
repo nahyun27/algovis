@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CITIES } from './solver';
+import { CITIES } from './shared';
 
 interface DPTableProps {
   dpTable: number[][]; 

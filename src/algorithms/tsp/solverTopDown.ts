@@ -1,27 +1,6 @@
-export interface TSPStep {
-  mask: number;
-  currentCity: number;
-  nextCity: number | null;
-  edgeWeight: number | null;
-  dpTable: number[][];
-  activeEdge: [number, number] | null;
-  description: string;
-  isImprovement: boolean;
-  codeLine: number;
-}
+import { type TSPStep, INF, CITIES, W } from './shared';
 
-export const INF = 1e9;
-export const CITIES = 4;
-
-// Directed asymmetric graph for TSP
-export const W = [
-  [0, 10, 15, 20],
-  [5,  0,  9, 10],
-  [6, 13,  0, 12],
-  [8,  8,  9,  0]
-];
-
-export function generateTSPSteps(): TSPStep[] {
+export function generateTSPStepsTopDown(): TSPStep[] {
   const steps: TSPStep[] = [];
   const N = CITIES;
   const dp: number[][] = Array.from({ length: 1 << N }, () => Array(N).fill(INF));
