@@ -12,8 +12,8 @@ interface GraphEditorProps {
   maxNodes: number;
   onRun: (data: GraphData) => string | null; // returns error string or null on success
   presets: Preset[];
-  /** 'tsp' | 'dijkstra' — controls validation message wording */
-  algorithmType: 'tsp' | 'dijkstra';
+  /** 'tsp' | 'dijkstra' | 'astar' — controls validation message wording */
+  algorithmType: 'tsp' | 'dijkstra' | 'astar';
 }
 
 let _edgeCounter = 0;

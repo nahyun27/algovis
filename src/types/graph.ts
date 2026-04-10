@@ -64,3 +64,27 @@ export const DIJKSTRA_DEFAULT_GRAPH: GraphData = {
     { id: '4-3', from: 4, to: 3, weight: 1  },
   ],
 };
+
+// A* default graph (6 nodes, directed)
+export const ASTAR_DEFAULT_GRAPH: GraphData = {
+  directed: true,
+  nodes: [
+    { id: 0, x: 100, y: 200, label: 'S' },
+    { id: 1, x: 200, y: 100, label: '1' },
+    { id: 2, x: 200, y: 300, label: '2' },
+    { id: 3, x: 350, y: 100, label: '3' },
+    { id: 4, x: 350, y: 300, label: '4' },
+    { id: 5, x: 500, y: 200, label: 'G' },
+  ],
+  edges: [
+    { id: '0-1', from: 0, to: 1, weight: 7 },
+    { id: '0-2', from: 0, to: 2, weight: 3 },
+    { id: '1-3', from: 1, to: 3, weight: 4 },
+    { id: '1-4', from: 1, to: 4, weight: 8 },
+    { id: '2-1', from: 2, to: 1, weight: 2 },
+    { id: '2-4', from: 2, to: 4, weight: 6 },
+    { id: '3-5', from: 3, to: 5, weight: 3 },
+    { id: '4-3', from: 4, to: 3, weight: 2 },
+    { id: '4-5', from: 4, to: 5, weight: 5 },
+  ],
+};

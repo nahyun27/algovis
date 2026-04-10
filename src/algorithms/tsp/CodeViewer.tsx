@@ -35,7 +35,7 @@ for mask in range(1, 1 << N):
             if i != j and (mask & (1 << j)) and W[j][i]:
                 res = dp[mask ^ (1 << i)][j] + W[j][i]
                 dp[mask][i] = min(dp[mask][i], res)
-
+http://localhost:5173/algorithm/astar
 ans = INF
 for i in range(1, N):
     if dp[(1 << N) - 1][i] != INF and W[i][0]:

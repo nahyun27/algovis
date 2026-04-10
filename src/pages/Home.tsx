@@ -47,7 +47,6 @@ const ALGORITHMS: AlgoCard[] = [
     category: "Pathfinding",
     timeComplexity: "O(E log V)",
     spaceComplexity: "O(V)",
-    comingSoon: true,
   },
   {
     id: "bfsdfs",
