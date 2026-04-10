@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+}
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #09090b;
+    --border: #e4e4e7;
+    --primary: #4f46e5;
+    --primary-foreground: #ffffff;
+    --muted: #f4f4f5;
+    --muted-foreground: #71717a;
+    --card: #ffffff;
+    --card-foreground: #09090b;
+  }
+  
+  .dark {
+    --background: #09090b;
+    --foreground: #fafafa;
+    --border: #27272a;
+    --primary: #6366f1;
+    --primary-foreground: #ffffff;
+    --muted: #18181b;
+    --muted-foreground: #a1a1aa;
+    --card: #09090b;
+    --card-foreground: #fafafa;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    @apply antialiased transition-colors duration-200;
+  }
+}
