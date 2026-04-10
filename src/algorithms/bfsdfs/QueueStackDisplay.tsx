@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowDown } from 'lucide-react';
-import type { BaseStep, BFSStep, DFSStep } from './types';
+import type { BaseStep, BFSStep, DFSStep, DataItem } from './types';
 
 interface QueueStackDisplayProps {
   step: BaseStep;
@@ -13,13 +13,14 @@ export default function QueueStackDisplay({ step, mode }: QueueStackDisplayProps
   
   // Safely extract items
   const items = React.useMemo(() => {
-    if (isBFS && 'queue' in step) {
+    const isBFS_inner = mode === 'BFS';
+    if (isBFS_inner && 'queue' in step) {
       return (step as BFSStep).queue;
-    } else if (!isBFS && 'stack' in step) {
+    } else if (!isBFS_inner && 'stack' in step) {
       return (step as DFSStep).stack;
     }
-    return [];
-  }, [step, mode, isBFS]);
+    return [] as DataItem[];
+  }, [step, mode]);
 
   return (
     <div className="bg-card rounded-xl border p-4 shadow-sm flex flex-col w-full overflow-hidden">
@@ -54,6 +55,7 @@ export default function QueueStackDisplay({ step, mode }: QueueStackDisplayProps
               <AnimatePresence mode="popLayout">
                 {items.length === 0 ? (
                   <motion.div
+                    key="empty-queue"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -62,17 +64,17 @@ export default function QueueStackDisplay({ step, mode }: QueueStackDisplayProps
                     큐가 비어있습니다
                   </motion.div>
                 ) : (
-                  items.map((node, i) => (
+                  items.map((item) => (
                     <motion.div
-                      key={`queue-${node}-${items.length - i}`} // Unique key trick to maintain LTR motion
+                      key={item.id}
                       layout
                       initial={{ opacity: 0, x: 50, scale: 0.8 }}
                       animate={{ opacity: 1, x: 0, scale: 1 }}
-                      exit={{ opacity: 0, x: -50, scale: 0.8 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                      exit={{ opacity: 0, x: -100, scale: 0.8 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
                       className="w-12 h-12 shrink-0 bg-sky-100 dark:bg-sky-900/40 border-2 border-sky-300 dark:border-sky-600 rounded-lg flex items-center justify-center font-bold text-sky-800 dark:text-sky-200 shadow-sm"
                     >
-                      {node}
+                      {item.value}
                     </motion.div>
                   ))
                 )}
@@ -101,6 +103,7 @@ export default function QueueStackDisplay({ step, mode }: QueueStackDisplayProps
               <AnimatePresence mode="popLayout">
                 {items.length === 0 ? (
                   <motion.div
+                    key="empty-stack"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -109,17 +112,17 @@ export default function QueueStackDisplay({ step, mode }: QueueStackDisplayProps
                     스택 비어있음
                   </motion.div>
                 ) : (
-                  items.map((node, i) => (
+                  items.map((item) => (
                     <motion.div
-                      key={`stack-${node}-${i}`}
+                      key={item.id}
                       layout
-                      initial={{ opacity: 0, y: -30, scale: 0.9 }}
+                      initial={{ opacity: 0, y: -50, scale: 0.9 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -30, scale: 0.9 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                      exit={{ opacity: 0, y: -80, scale: 0.9 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
                       className="w-16 h-10 shrink-0 bg-sky-100 dark:bg-sky-900/40 border-2 border-sky-300 dark:border-sky-600 rounded flex items-center justify-center font-bold text-sky-800 dark:text-sky-200 shadow-sm"
                     >
-                      {node}
+                      {item.value}
                     </motion.div>
                   ))
                 )}

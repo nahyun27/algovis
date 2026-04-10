@@ -1,4 +1,4 @@
-import type { DFSStep } from './types';
+import type { DFSStep, DataItem } from './types';
 import { BFS_DFS_DEFAULT_GRAPH } from './types';
 
 // Converts edges into undirected adjacency list
@@ -23,14 +23,15 @@ export function generateDFSSteps(
   const adj = buildAdj(edges, N);
   const steps: DFSStep[] = [];
   
-  const stack: number[] = [];
+  let entryId = 0;
+  const stack: DataItem[] = [];
   const visitedSet = new Set<number>();
   const visitedNodes: number[] = [];
   const treeEdges: [number, number][] = [];
   
   const start = 0;
 
-  const cloneStack = () => [...stack];
+  const cloneStack = () => stack.map(item => ({ ...item }));
   const cloneVisitedSet = () => Array.from(visitedSet);
   const cloneVisitedNodes = () => [...visitedNodes];
   const cloneTreeEdges = () => [...treeEdges] as [number, number][];
@@ -69,12 +70,12 @@ export function generateDFSSteps(
   };
 
   // INIT
-  stack.push(start);
+  stack.push({ id: `e-${entryId++}`, value: start });
   
   addStep('INIT', `초기화: 시작 노드 ${start}을(를) 스택에 삽입.`, null, null, null);
 
   while (stack.length > 0) {
-    const u = stack.pop()!;
+    const { value: u } = stack.pop()!;
     addStep('POP', `스택에서 노드 ${u}을(를) 꺼냄.`, u, null, null);
     
     if (!visitedSet.has(u)) {
@@ -90,7 +91,7 @@ export function generateDFSSteps(
         
         if (!visitedSet.has(v)) {
           treeEdges.push([u, v]);
-          stack.push(v);
+          stack.push({ id: `e-${entryId++}`, value: v });
           addStep('PUSH', `노드 ${v} 아직 방문 안됨 → 스택에 삽입.`, u, v, [u, v]);
         } else {
           addStep('DISCOVER', `노드 ${v}는 이미 방문되어 무시함.`, u, v, [u, v]);

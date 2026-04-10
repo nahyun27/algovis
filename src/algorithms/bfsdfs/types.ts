@@ -1,5 +1,10 @@
 import type { GraphData } from '../../types/graph';
 
+export interface DataItem {
+  id: string;
+  value: number;
+}
+
 export interface BaseStep {
   type: 'ENQUEUE' | 'PUSH' | 'DEQUEUE' | 'POP' | 'DISCOVER' | 'DONE' | 'INIT';
   description: string;
@@ -14,11 +19,11 @@ export interface BaseStep {
 }
 
 export interface BFSStep extends BaseStep {
-  queue: number[];
+  queue: DataItem[];
 }
 
 export interface DFSStep extends BaseStep {
-  stack: number[];
+  stack: DataItem[];
 }
 
 export const BFS_DFS_DEFAULT_GRAPH: GraphData = {

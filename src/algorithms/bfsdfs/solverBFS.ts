@@ -1,4 +1,4 @@
-import type { BFSStep } from './types';
+import type { BFSStep, DataItem } from './types';
 import { BFS_DFS_DEFAULT_GRAPH } from './types';
 
 // Converts edges into undirected adjacency list
@@ -23,14 +23,15 @@ export function generateBFSSteps(
   const adj = buildAdj(edges, N);
   const steps: BFSStep[] = [];
   
-  const queue: number[] = [];
+  let entryId = 0;
+  const queue: DataItem[] = [];
   const visitedSet = new Set<number>();
   const visitedNodes: number[] = [];
   const treeEdges: [number, number][] = [];
   
   const start = 0;
 
-  const cloneQueue = () => [...queue];
+  const cloneQueue = () => queue.map(item => ({ ...item }));
   const cloneVisitedSet = () => Array.from(visitedSet);
   const cloneVisitedNodes = () => [...visitedNodes];
   const cloneTreeEdges = () => [...treeEdges] as [number, number][];
@@ -69,13 +70,13 @@ export function generateBFSSteps(
   };
 
   // INIT
-  queue.push(start);
+  queue.push({ id: `e-${entryId++}`, value: start });
   visitedSet.add(start);
   
   addStep('INIT', `초기화: 시작 노드 ${start}을(를) 큐에 삽입하고 방문 처리.`, null, null, null);
 
   while (queue.length > 0) {
-    const u = queue.shift()!;
+    const { value: u } = queue.shift()!;
     visitedNodes.push(u);
     
     addStep('DEQUEUE', `큐에서 노드 ${u}을(를) 꺼냄. 방문 순서 최종 확정.`, u, null, null);
@@ -85,7 +86,7 @@ export function generateBFSSteps(
       
       if (!visitedSet.has(v)) {
         visitedSet.add(v);
-        queue.push(v);
+        queue.push({ id: `e-${entryId++}`, value: v });
         treeEdges.push([u, v]);
         addStep('ENQUEUE', `노드 ${v} 방문 안됨 → 큐에 삽입.`, u, v, [u, v]);
       } else {
