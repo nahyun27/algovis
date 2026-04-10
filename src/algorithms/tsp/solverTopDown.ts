@@ -1,8 +1,10 @@
-import { type TSPStep, INF, CITIES, W } from './shared';
+import { type TSPStep, INF, CITIES, W as DEFAULT_W } from './shared';
 
-export function generateTSPStepsTopDown(): TSPStep[] {
+export function generateTSPStepsTopDown(
+  W: number[][] = DEFAULT_W,
+  N: number = CITIES,
+): TSPStep[] {
   const steps: TSPStep[] = [];
-  const N = CITIES;
   const dp: number[][] = Array.from({ length: 1 << N }, () => Array(N).fill(INF));
   
   const cloneDP = () => dp.map(row => [...row]);

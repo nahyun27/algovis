@@ -1,8 +1,7 @@
-import { EDGES } from './types';
+import { EDGES as DEFAULT_EDGES } from './types';
 import type { DijkstraStep } from './types';
 
-// 5 노드 좌표: 넉넉한 간격
-const NODES = [
+const DEFAULT_NODES = [
   { id: 0, x: 80,  y: 180 },
   { id: 1, x: 220, y: 70  },
   { id: 2, x: 220, y: 290 },
@@ -12,12 +11,16 @@ const NODES = [
 
 interface GraphCanvasProps {
   step: DijkstraStep;
-  // edges confirmed as shortest path (u→v pairs)
   shortestEdges: [number, number][];
+  // custom graph support
+  customNodes?: { id: number; x: number; y: number }[];
+  customEdges?: [number, number, number][];
 }
 
-export default function DijkstraGraphCanvas({ step, shortestEdges }: GraphCanvasProps) {
+export default function DijkstraGraphCanvas({ step, shortestEdges, customNodes, customEdges }: GraphCanvasProps) {
   const { currentNode, neighborNode, activeEdge, visited } = step;
+  const NODES = customNodes ?? DEFAULT_NODES.slice(0, step.dist.length);
+  const EDGES = customEdges ?? DEFAULT_EDGES;
 
   return (
     <div className="w-full min-h-[380px] h-full flex flex-col relative p-4 bg-muted/10 items-center justify-center">

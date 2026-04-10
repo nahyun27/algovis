@@ -1,20 +1,25 @@
-import { W } from './shared';
+import { W as DEFAULT_W } from './shared';
 
 interface GraphCanvasProps {
   currentMask: number;
   currentCity: number;
   nextCity: number | null;
   activeEdge: [number, number] | null;
+  // custom graph support
+  customNodes?: { id: number; x: number; y: number }[];
+  customW?: number[][];
 }
 
-export default function GraphCanvas({ currentMask, currentCity, nextCity, activeEdge }: GraphCanvasProps) {
-  // Spacious diamond layout — wider viewBox to avoid label overlap
-  const nodes = [
+export default function GraphCanvas({ currentMask, currentCity, nextCity, activeEdge, customNodes, customW }: GraphCanvasProps) {
+  const W = customW ?? DEFAULT_W;
+  const N = W.length;
+  const defaultNodes = [
     { id: 0, x: 240, y: 60  },
     { id: 1, x: 400, y: 190 },
     { id: 2, x: 240, y: 320 },
     { id: 3, x: 80,  y: 190 },
   ];
+  const nodes = customNodes ?? defaultNodes.slice(0, N);
 
   return (
     <div className="w-full min-h-[400px] h-full flex flex-col relative p-4 bg-muted/10 items-center justify-center">

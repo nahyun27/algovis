@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import { CITIES } from './shared';
 
 interface DPTableProps {
-  dpTable: number[][]; 
+  dpTable: number[][];
   currentMask: number;
   currentCity: number;
 }
 
 export default function DPTable({ dpTable, currentMask, currentCity }: DPTableProps) {
-  const N = CITIES;
+  const N = dpTable[0]?.length ?? 4;
   const [hideUnreachable, setHideUnreachable] = useState(false);
   
   return (

@@ -1,6 +1,18 @@
-import { type DijkstraStep, INF, N, ADJ } from './types';
+import { type DijkstraStep, INF, N as DEFAULT_N, ADJ as DEFAULT_ADJ } from './types';
 
-export function generateDijkstraSteps(): DijkstraStep[] {
+/** Build adjacency list from edge array */
+function buildAdj(edges: [number, number, number][], n: number): { v: number; w: number }[][] {
+  const adj: { v: number; w: number }[][] = Array.from({ length: n }, () => []);
+  for (const [u, v, w] of edges) adj[u].push({ v, w });
+  return adj;
+}
+
+export function generateDijkstraSteps(
+  customEdges?: [number, number, number][],
+  customN?: number,
+): DijkstraStep[] {
+  const N   = customN ?? DEFAULT_N;
+  const ADJ = customEdges ? buildAdj(customEdges, N) : DEFAULT_ADJ;
   const steps: DijkstraStep[] = [];
   const dist = Array(N).fill(INF);
   const visited = Array(N).fill(false);
