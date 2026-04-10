@@ -47,6 +47,19 @@ import { generateDFSSteps } from '../algorithms/bfsdfs/solverDFS';
 import { BFS_DFS_DEFAULT_GRAPH } from '../algorithms/bfsdfs/types';
 import type { BaseStep } from '../algorithms/bfsdfs/types';
 
+// Bellman-Ford
+import BFGraphCanvas   from '../algorithms/bellmanford/GraphCanvas';
+import BFCodeViewer    from '../algorithms/bellmanford/CodeViewer';
+import BFProblemList   from '../algorithms/bellmanford/ProblemList';
+import BFDistanceTable from '../algorithms/bellmanford/DistanceTable';
+import BFInfoModal     from '../algorithms/bellmanford/InfoModal';
+import { generateBellmanFordSteps } from '../algorithms/bellmanford/solver';
+import {
+  EXAMPLE1_N, EXAMPLE1_EDGES, EXAMPLE1_NODES,
+  EXAMPLE2_N, EXAMPLE2_EDGES, EXAMPLE2_NODES,
+} from '../algorithms/bellmanford/types';
+import type { BellmanFordStep } from '../algorithms/bellmanford/types';
+
 /* ─────────────── helpers ─────────────── */
 
 type PageMode = 'example' | 'editor';
@@ -761,12 +774,134 @@ function BFSDFSPage() {
   );
 }
 
+/* ─────────────── Bellman-Ford Page ─────────────── */
+
+type BFExample = 'ex1' | 'ex2';
+
+function BellmanFordPage() {
+  const [example, setExample] = useState<BFExample>('ex1');
+  const [currentStepIdx, setCurrentStepIdx] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { nodes, edges, N } = example === 'ex1'
+    ? { nodes: EXAMPLE1_NODES, edges: EXAMPLE1_EDGES, N: EXAMPLE1_N }
+    : { nodes: EXAMPLE2_NODES, edges: EXAMPLE2_EDGES, N: EXAMPLE2_N };
+
+  const steps = useMemo<BellmanFordStep[]>(
+    () => generateBellmanFordSteps(edges, N),
+    [example], // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  const step = steps[currentStepIdx] ?? steps[0];
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    if (currentStepIdx >= steps.length - 1) {
+      const t = window.setTimeout(() => setIsPlaying(false), 0);
+      return () => clearTimeout(t);
+    }
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 700);
+    return () => clearTimeout(t);
+  }, [isPlaying, currentStepIdx, steps.length]);
+
+  const handleExampleChange = (ex: BFExample) => {
+    setExample(ex);
+    setCurrentStepIdx(0);
+    setIsPlaying(false);
+  };
+
+  const bannerClass =
+    step.type === 'NEGATIVE_CYCLE'
+      ? 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-red-100 dark:border-red-900/50'
+      : step.type === 'DONE'
+        ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 border-blue-100 dark:border-blue-900/50'
+        : step.isImprovement
+          ? 'bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-200 border-green-100 dark:border-green-900/50'
+          : 'bg-zinc-100 dark:bg-zinc-800/50 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700';
+
+  return (
+    <div className="flex flex-col min-h-[calc(100vh-8rem)] lg:flex-row gap-6">
+      <div className="flex-1 border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
+
+        {/* Header */}
+        <div className="p-3 lg:p-4 border-b flex justify-between items-center bg-muted/30 flex-wrap gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            <h2 className="font-semibold text-base lg:text-lg tracking-tight">벨만-포드 최단경로 시각화</h2>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-rose-300 dark:border-rose-700 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors"
+            >벨만-포드란? 💡</button>
+            {/* Example tabs */}
+            <div className="flex gap-1 bg-muted/40 rounded-lg p-1">
+              {(['ex1', 'ex2'] as BFExample[]).map(ex => (
+                <button
+                  key={ex}
+                  onClick={() => handleExampleChange(ex)}
+                  className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${
+                    example === ex
+                      ? 'bg-white dark:bg-zinc-800 shadow-sm text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >{ex === 'ex1' ? '기본 예제 (음수 간선)' : '음수 사이클 예제'}</button>
+              ))}
+            </div>
+          </div>
+          <div className={`text-xs font-bold px-3 py-1 rounded-full border ${
+            step.type === 'NEGATIVE_CYCLE' ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700' :
+            step.type === 'RELAX'   ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 border-orange-300 dark:border-orange-700' :
+            step.type === 'DONE'    ? 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700' :
+            step.type === 'ROUND_START' ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' :
+            'bg-muted text-muted-foreground border-border'
+          }`}>{step.type}</div>
+        </div>
+
+        {/* Banner */}
+        <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>
+          {step.description}
+        </div>
+
+        <div className="flex-1 flex flex-col bg-muted/5 divide-y divide-border overflow-hidden min-h-0 relative">
+          <div className="w-full flex flex-col relative overflow-y-auto group border-b" style={{ minHeight: '40%' }}>
+            <BFGraphCanvas step={step} nodes={nodes} edges={edges} />
+          </div>
+          <div className="w-full flex-1 p-3 xl:p-5 overflow-auto min-h-[250px]">
+            <BFDistanceTable step={step} />
+          </div>
+        </div>
+
+        <StepController
+          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying}
+          onPlayPause={() => setIsPlaying(p => !p)}
+          onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
+          onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
+          onFirst={() => { setIsPlaying(false); setCurrentStepIdx(0); }}
+          onLast={() => { setIsPlaying(false); setCurrentStepIdx(steps.length - 1); }}
+        />
+      </div>
+
+      <div className="w-full lg:w-[440px] flex flex-col gap-6">
+        <BFCodeViewer codeLine={step.codeLine} />
+        <BFProblemList />
+      </div>
+
+      <BFInfoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); }}
+      />
+    </div>
+  );
+}
+
 /* ─────────────── Router ─────────────── */
 export default function AlgorithmPage() {
   const { slug } = useParams();
-  if (slug === 'tsp')      return <TSPPage />;
-  if (slug === 'dijkstra') return <DijkstraPage />;
-  if (slug === 'astar')    return <AStarPage />;
-  if (slug === 'bfsdfs')   return <BFSDFSPage />;
+  if (slug === 'tsp')         return <TSPPage />;
+  if (slug === 'dijkstra')    return <DijkstraPage />;
+  if (slug === 'astar')       return <AStarPage />;
+  if (slug === 'bfsdfs')      return <BFSDFSPage />;
+  if (slug === 'bellmanford') return <BellmanFordPage />;
   return <div className="p-8 text-center text-muted-foreground">알고리즘을 찾을 수 없습니다.</div>;
 }
+

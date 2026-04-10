@@ -59,6 +59,17 @@ const ALGORITHMS: AlgoCard[] = [
     timeComplexity: "O(V + E)",
     spaceComplexity: "O(V)",
   },
+  {
+    id: "bellmanford",
+    name: "Bellman-Ford",
+    korName: "벨만-포드",
+    slug: "bellmanford",
+    description: "음수 간선이 있는 그래프의 단일 출발점 최단 경로를 구하고 음수 사이클을 감지합니다.",
+    difficulty: "Medium",
+    category: "Graph",
+    timeComplexity: "O(V·E)",
+    spaceComplexity: "O(V)",
+  },
 ];
 
 const CATEGORIES = ["All", "Graph", "DP", "Pathfinding"] as const;

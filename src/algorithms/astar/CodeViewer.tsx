@@ -81,7 +81,7 @@ export default function CodeViewer({ codeLine }: { codeLine: number }) {
   };
 
   return (
-    <div className="border rounded-xl bg-[var(--code-bg)] shadow-sm overflow-hidden flex flex-col flex-shrink-0 h-[540px]">
+    <div className="border rounded-xl bg-[var(--code-bg)] shadow-sm overflow-hidden flex flex-col flex-shrink-0 max-h-[540px]">
       {/* Header */}
       <div className="p-3 border-b bg-muted/30 flex items-center justify-between gap-2">
         <h2 className="font-semibold tracking-tight text-sm truncate">Source Code (Python A*)</h2>

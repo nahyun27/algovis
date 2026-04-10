@@ -1,11 +1,8 @@
-import React from 'react';
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
+import { useState } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Check, Copy } from 'lucide-react';
 import { BFS_CODE, DFS_CODE } from './types';
-
-SyntaxHighlighter.registerLanguage('python', python);
 
 interface CodeViewerProps {
   codeLine: number;
@@ -13,54 +10,96 @@ interface CodeViewerProps {
 }
 
 export default function CodeViewer({ codeLine, mode }: CodeViewerProps) {
-  const [copied, setCopied] = React.useState(false);
+  const [copied, setCopied] = useState(false);
 
   const code = mode === 'BFS' ? BFS_CODE : DFS_CODE;
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const isHighlighted = (lineNum: number) => {
+    // Basic highlighting based on solver codeLine
+    // In solverBFS/DFS, we pass the "start" of the relevant block usually
+    if (mode === 'BFS') {
+      if (codeLine === 4 && lineNum >= 4 && lineNum <= 7) return true; // INIT
+      if (codeLine === 10 && lineNum >= 10 && lineNum <= 11) return true; // DEQUEUE
+      if (codeLine === 12 && lineNum >= 14 && lineNum <= 14) return true; // DISCOVER
+      if (codeLine === 15 && lineNum >= 15 && lineNum <= 17) return true; // ENQUEUE
+      if (codeLine === 17 && lineNum >= 19) return true; // DONE
+    } else {
+      if (codeLine === 4 && lineNum >= 2 && lineNum <= 4) return true; // INIT
+      if (codeLine === 7 && lineNum >= 7 && lineNum <= 11) return true; // POP
+      if (codeLine === 13 && lineNum >= 14 && lineNum <= 14) return true; // DISCOVER
+      if (codeLine === 16 && lineNum >= 16 && lineNum <= 17) return true; // PUSH
+      if (codeLine === 18 && lineNum >= 19) return true; // DONE
+    }
+    return false;
   };
 
   return (
-    <div className="rounded-xl overflow-hidden border bg-[#1E1E1E] shadow-sm flex flex-col">
-      <div className="flex items-center justify-between px-4 py-2 bg-zinc-900 border-b border-zinc-800">
-        <span className="text-xs font-semibold text-zinc-300">
-          {mode === 'BFS' ? 'bfs.py' : 'dfs.py'}
-        </span>
+    <div className="border rounded-xl bg-[var(--code-bg)] shadow-sm overflow-hidden flex flex-col flex-shrink-0 max-h-[540px]">
+      {/* Header */}
+      <div className="p-3 border-b bg-muted/30 flex items-center justify-between gap-2">
+        <h2 className="font-semibold tracking-tight text-sm truncate">
+          Source Code (Python {mode})
+        </h2>
         <button
           onClick={handleCopy}
-          className="text-zinc-500 hover:text-zinc-300 transition-colors"
+          className={`flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-md border transition-all shrink-0 ${
+            copied
+              ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700'
+              : 'bg-card hover:bg-muted/60 text-muted-foreground hover:text-foreground border-border'
+          }`}
           title="코드 복사"
         >
-          {copied ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+          {copied ? (
+            <><Check className="w-3 h-3" /> 복사됨!</>
+          ) : (
+            <><Copy className="w-3 h-3" /> 복사</>
+          )}
         </button>
       </div>
-      <div className="p-4 overflow-x-auto text-sm leading-relaxed relative">
+
+      {/* Code Area */}
+      <div className="flex-1 overflow-auto text-[13px] bg-[#1e1e1e]" style={{ overflowX: 'auto' }}>
         <SyntaxHighlighter
           language="python"
-          style={vscDarkPlus as any}
+          style={vscDarkPlus}
+          showLineNumbers
+          wrapLines={true}
+          lineProps={(lineNumber) => ({
+            style: {
+              display: 'block',
+              backgroundColor: isHighlighted(lineNumber)
+                ? 'rgba(147, 197, 253, 0.18)' // A* uses 0.18 blue
+                : 'transparent',
+              borderLeft: isHighlighted(lineNumber)
+                ? '3px solid #3b82f6'
+                : '3px solid transparent',
+              paddingLeft: '10px',
+              whiteSpace: 'pre',
+            }
+          })}
           customStyle={{
             margin: 0,
-            padding: 0,
+            padding: '16px 0',
             background: 'transparent',
+            minWidth: 'max-content',
             fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-            fontSize: '13px'
-          }}
-          wrapLines={true}
-          showLineNumbers={true}
-          lineNumberStyle={{ minWidth: '2.5em', paddingRight: '1em', color: '#6e7681', textAlign: 'right' }}
-          lineProps={(lineNumber) => {
-            const style: any = { display: 'block', padding: '0 4px' };
-            if (lineNumber === codeLine) {
-              style.backgroundColor = 'rgba(147, 197, 253, 0.15)'; // blue-300 with opacity
-              style.borderLeft = '3px solid #3b82f6'; // blue-500
-              style.paddingLeft = '1px';
-            } else {
-              style.borderLeft = '3px solid transparent';
-            }
-            return { style };
           }}
         >
           {code}
@@ -69,3 +108,4 @@ export default function CodeViewer({ codeLine, mode }: CodeViewerProps) {
     </div>
   );
 }
+
