@@ -5,6 +5,7 @@ import GraphCanvas from '../algorithms/tsp/GraphCanvas';
 import CodeViewer from '../algorithms/tsp/CodeViewer';
 import ProblemList from '../algorithms/tsp/ProblemList';
 import DPTable from '../algorithms/tsp/DPTable';
+import TSPInfoModal from '../algorithms/tsp/TSPInfoModal';
 import { generateTSPStepsTopDown } from '../algorithms/tsp/solverTopDown';
 import { generateTSPStepsBottomUp } from '../algorithms/tsp/solverBottomUp';
 
@@ -15,6 +16,7 @@ export default function AlgorithmPage() {
   const [solverType, setSolverType] = useState<SolverType>('topDown');
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Generate steps synchronously via useMemo — avoids useEffect setState cascade
   const steps = useMemo(() => {
@@ -60,7 +62,15 @@ export default function AlgorithmPage() {
 
         {/* Header with solver toggle */}
         <div className="p-3 lg:p-4 border-b flex justify-between items-center bg-muted/30 flex-wrap gap-3">
-          <h2 className="font-semibold text-base lg:text-lg tracking-tight">TSP 비트마스크 DP 시각화</h2>
+          <div className="flex items-center gap-3">
+            <h2 className="font-semibold text-base lg:text-lg tracking-tight">TSP 비트마스크 DP 시각화</h2>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
+            >
+              TSP란? 💡
+            </button>
+          </div>
           <div className="flex bg-card p-1 rounded-lg border shadow-sm gap-0.5">
             <button
               className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
@@ -132,6 +142,16 @@ export default function AlgorithmPage() {
         <CodeViewer codeLine={currentStep.codeLine} solverType={solverType} />
         <ProblemList />
       </div>
+
+      {/* TSP Info Modal */}
+      <TSPInfoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onStartVisualization={() => {
+          setCurrentStepIdx(0);
+          setIsPlaying(true);
+        }}
+      />
     </div>
   );
 }
