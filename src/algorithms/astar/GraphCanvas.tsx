@@ -103,16 +103,16 @@ export default function GraphCanvas({ step, shortestEdges, customNodes, customEd
             <text
               textAnchor="middle"
               alignmentBaseline="central"
-              className="text-xs font-bold fill-white dark:fill-zinc-950 stroke-white dark:stroke-zinc-950"
-              strokeWidth="3"
+              className="text-base font-bold fill-white dark:fill-zinc-950 stroke-white dark:stroke-zinc-950"
+              strokeWidth="4"
             >
               {w}
             </text>
             <text
               textAnchor="middle"
               alignmentBaseline="central"
-              className={`text-xs font-bold transition-colors ${
-                isActive ? 'fill-orange-600 dark:fill-orange-400' : 'fill-zinc-600 dark:fill-zinc-300'
+              className={`text-base font-extrabold transition-colors ${
+                isActive ? 'fill-orange-600 dark:fill-orange-400' : 'fill-zinc-700 dark:fill-zinc-200'
               }`}
             >
               {w}
@@ -129,8 +129,8 @@ export default function GraphCanvas({ step, shortestEdges, customNodes, customEd
       const isGoal = n.id === GOAL_NODE;
       const isStart = n.id === 0;
 
-      let bgColor = 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400';
-      let ring = 'ring-zinc-300 dark:ring-zinc-700';
+      let bgColor = 'bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300';
+      let ring = 'ring-zinc-300 dark:ring-zinc-600';
 
       if (step.currentProcessingNode === n.id) {
         bgColor = 'bg-blue-500 text-white shadow-lg shadow-blue-500/50';
@@ -139,7 +139,7 @@ export default function GraphCanvas({ step, shortestEdges, customNodes, customEd
         bgColor = 'bg-zinc-400 dark:bg-zinc-600 text-white';
         ring = 'ring-zinc-300 dark:ring-zinc-700';
       } else if (step.openSet.includes(n.id)) {
-        bgColor = 'bg-sky-200 dark:bg-sky-900/60 text-sky-800 dark:text-sky-300';
+        bgColor = 'bg-sky-200 dark:bg-sky-900/60 text-sky-800 dark:text-sky-200';
         ring = 'ring-sky-300 dark:ring-sky-700';
       }
       
@@ -163,36 +163,36 @@ export default function GraphCanvas({ step, shortestEdges, customNodes, customEd
         <foreignObject
           key={n.id}
           x={n.x - 40}
-          y={n.y - 40}
+          y={n.y - 45} /* Slightly higher up */
           width={80}
-          height={80}
+          height={90}
           className="overflow-visible"
         >
-          <div className="w-full h-full flex flex-col items-center justify-start pt-4 relative group">
+          <div className="w-full h-full flex flex-col items-center justify-start pt-5 relative group">
             <div
               className={`
                 w-12 h-12 rounded-full flex items-center justify-center
-                font-bold text-base z-10 transition-all duration-300
+                font-black text-2xl z-10 transition-all duration-300
                 ring-2 ${ring} ${bgColor}
               `}
             >
-              {isGoal ? <Star size={18} className={step.currentProcessingNode === n.id ? 'fill-current' : ''} /> : n.id}
+              {isGoal ? <Star size={24} className={step.currentProcessingNode === n.id ? 'fill-current' : ''} /> : n.id}
             </div>
             
             {/* f, g, h values underneath */}
-            <div className="absolute top-[52px] flex flex-col items-center pointer-events-none bg-white/90 dark:bg-zinc-900/90 rounded px-2 py-1 whitespace-nowrap shadow-sm border border-zinc-200 dark:border-zinc-800 z-20">
-              <span className="text-xs font-bold text-purple-600 dark:text-purple-400 leading-tight">f={fStr}</span>
-              <span className="text-[10px] text-muted-foreground leading-tight">g={gStr} h={hStr}</span>
+            <div className="absolute top-[60px] flex flex-col items-center pointer-events-none bg-white/95 dark:bg-zinc-900/95 rounded px-3 py-1.5 whitespace-nowrap shadow-sm border border-zinc-200 dark:border-zinc-800 z-20">
+              <span className="text-base font-extrabold text-purple-600 dark:text-purple-400 leading-tight mb-0.5">f={fStr}</span>
+              <span className="text-sm font-semibold text-muted-foreground leading-tight">g={gStr} h={hStr}</span>
             </div>
             
             {/* Start/Goal labels above */}
             {isStart && (
-              <div className="absolute -top-4 text-[10px] font-bold px-1.5 py-0.5 bg-zinc-800 text-white rounded dark:bg-zinc-200 dark:text-zinc-900 shadow-sm">
+              <div className="absolute -top-3 text-sm font-extrabold px-2.5 py-0.5 bg-zinc-800 text-white rounded dark:bg-zinc-200 dark:text-zinc-900 shadow-sm">
                 START
               </div>
             )}
             {isGoal && (
-              <div className="absolute -top-4 text-[10px] font-bold px-1.5 py-0.5 bg-purple-600 text-white rounded shadow-sm">
+              <div className="absolute -top-3 text-sm font-extrabold px-2.5 py-0.5 bg-purple-600 text-white rounded shadow-sm">
                 GOAL
               </div>
             )}

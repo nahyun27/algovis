@@ -67,7 +67,11 @@ export function generateAStarSteps(
       h: [...h],
       f: [...f],
       parent: [...parent],
-      openSet: openQueue.map(item => item[2]),
+      openSet: Array.from(new Set(
+        openQueue
+          .filter(item => !closedSet.has(item[2]))
+          .map(item => item[2])
+      )),
       closedSet: Array.from(closedSet),
       currentProcessingNode: curNode,
       activeEdge: actEdge,
