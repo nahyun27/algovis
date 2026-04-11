@@ -155,7 +155,7 @@ export default function Home() {
           <span className="inline-block mb-4 text-xs font-semibold tracking-widest uppercase bg-white/20 rounded-full px-3 py-1">
             Algorithm Visualizer
           </span>
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">AlgoVis</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">AlgoTrace</h1>
           <p className="mt-3 text-lg md:text-xl text-white/80 max-w-xl leading-relaxed">
             복잡한 알고리즘을 한 단계씩 눈으로 이해하는 인터랙티브 시각화 플랫폼
           </p>

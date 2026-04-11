@@ -1,8 +1,8 @@
-# algovis
+# AlgoTrace
 
 > Interactive algorithm visualizer — step-by-step animations for graph, DP, and pathfinding algorithms with code viewer and practice problems
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit-blue?style=for-the-badge&logo=vercel)](https://algovis-eosin.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit-blue?style=for-the-badge&logo=vercel)](https://algotrace-eosin.vercel.app/)
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
@@ -31,8 +31,8 @@ DP 테이블, 그래프 탐색 과정, 소스 코드 하이라이팅이 스텝�
 **요구사항: Node.js 20.19+ 또는 22.12+**
 
 ```bash
-git clone https://github.com/<username>/algovis.git
-cd algovis
+git clone https://github.com/<username>/algotrace.git
+cd algotrace
 npm install
 npm run dev
 ```

@@ -31,7 +31,7 @@ export default function Header() {
             <Menu className="h-5 w-5" />
           </button>
           <Link to="/" className="flex items-center space-x-2">
-            <span className="font-bold text-base">AlgoVis</span>
+            <span className="font-bold text-base">AlgoTrace</span>
           </Link>
         </div>
 
