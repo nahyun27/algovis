@@ -126,55 +126,11 @@ export default function TopoGraphCanvas({ step, mode, nodes, edges }: Props) {
       const dfsStep = step as DFSTopoStep;
       const stackPos = mode === 'DFS' && dfsStep.stack.indexOf(node.id);
 
+      const bx = node.x + R * 0.7;
+      const by = node.y - R * 0.7;
+
       return (
         <g key={node.id} className="transition-all duration-300">
-          {/* In-degree badge (Kahn only) */}
-          {showInDeg && inDeg !== null && (
-            <circle
-              cx={node.x + R * 0.7}
-              cy={node.y - R * 0.7}
-              r={10}
-              fill={isDecreased ? '#fbbf24' : inDeg === 0 ? '#22c55e' : '#6b7280'}
-              className="transition-all duration-300"
-            />
-          )}
-          {showInDeg && inDeg !== null && (
-            <text
-              x={node.x + R * 0.7}
-              y={node.y - R * 0.7}
-              textAnchor="middle"
-              dominantBaseline="central"
-              fontSize={10}
-              fontWeight="bold"
-              fill="white"
-            >
-              {inDeg}
-            </text>
-          )}
-
-          {/* DFS stack position badge */}
-          {mode === 'DFS' && typeof stackPos === 'number' && stackPos >= 0 && (
-            <>
-              <circle
-                cx={node.x + R * 0.7}
-                cy={node.y - R * 0.7}
-                r={10}
-                fill="#10b981"
-              />
-              <text
-                x={node.x + R * 0.7}
-                y={node.y - R * 0.7}
-                textAnchor="middle"
-                dominantBaseline="central"
-                fontSize={10}
-                fontWeight="bold"
-                fill="white"
-              >
-                {(step as DFSTopoStep).stack.length - stackPos}
-              </text>
-            </>
-          )}
-
           {/* Main node circle */}
           <circle
             cx={node.x}
@@ -198,6 +154,53 @@ export default function TopoGraphCanvas({ step, mode, nodes, edges }: Props) {
           >
             {node.label}
           </text>
+
+          {/* In-degree badge (Kahn only) — drawn after node so it appears on top */}
+          {showInDeg && inDeg !== null && (
+            <>
+              <circle
+                cx={bx}
+                cy={by}
+                r={10}
+                fill={isDecreased ? '#fbbf24' : inDeg === 0 ? '#22c55e' : '#6b7280'}
+                className="transition-all duration-300"
+              />
+              <text
+                x={bx}
+                y={by}
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontSize={10}
+                fontWeight="bold"
+                fill="white"
+              >
+                {inDeg}
+              </text>
+            </>
+          )}
+
+          {/* DFS stack position badge — drawn after node so it appears on top */}
+          {mode === 'DFS' && typeof stackPos === 'number' && stackPos >= 0 && (
+            <>
+              <circle
+                cx={bx}
+                cy={by}
+                r={10}
+                fill="#10b981"
+              />
+              <text
+                x={bx}
+                y={by}
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontSize={10}
+                fontWeight="bold"
+                fill="white"
+              >
+                {(step as DFSTopoStep).stack.length - stackPos}
+              </text>
+            </>
+          )}
         </g>
       );
     });
