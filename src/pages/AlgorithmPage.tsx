@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { Edit2, ArrowLeft } from 'lucide-react';
 import StepController from '../components/algorithm/StepController';
+import RightPanel from '../components/algorithm/RightPanel';
 import GraphEditor from '../components/GraphEditor';
 import type { GraphData } from '../types/graph';
 import { TSP_DEFAULT_GRAPH, DIJKSTRA_DEFAULT_GRAPH } from '../types/graph';
@@ -153,7 +154,7 @@ function TSPPage() {
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-8rem)] lg:flex-row gap-6">
-      <div className="flex-1 border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
+      <div className="flex-1 min-w-[600px] border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
 
         {/* Header */}
         <div className="p-3 lg:p-4 border-b flex justify-between items-center bg-muted/30 flex-wrap gap-3">
@@ -242,10 +243,10 @@ function TSPPage() {
         )}
       </div>
 
-      <div className="w-full lg:w-[440px] flex flex-col gap-6">
+      <RightPanel>
         <TSPCodeViewer codeLine={mode === 'example' ? step.codeLine : 0} solverType={solverType} />
         <TSPProblemList />
-      </div>
+      </RightPanel>
 
       <TSPInfoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
         onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); setMode('example'); }} />
@@ -339,7 +340,7 @@ function DijkstraPage() {
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-8rem)] lg:flex-row gap-6">
-      <div className="flex-1 border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
+      <div className="flex-1 min-w-[600px] border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
 
         {/* Header */}
         <div className="p-3 lg:p-4 border-b flex justify-between items-center bg-muted/30 flex-wrap gap-3">
@@ -421,10 +422,10 @@ function DijkstraPage() {
         )}
       </div>
 
-      <div className="w-full lg:w-[440px] flex flex-col gap-6">
+      <RightPanel>
         <DijkstraCodeViewer codeLine={mode === 'example' ? step.codeLine : 0} />
         <DijkstraProblemList />
-      </div>
+      </RightPanel>
 
       <DijkstraInfoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
         onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); setMode('example'); }} />
@@ -500,7 +501,7 @@ function AStarPage() {
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-8rem)] lg:flex-row gap-6">
-      <div className="flex-1 border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
+      <div className="flex-1 min-w-[600px] border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
 
         {/* Header */}
         <div className="p-3 lg:p-4 border-b flex justify-between items-center bg-muted/30 flex-wrap gap-3">
@@ -582,7 +583,7 @@ function AStarPage() {
         )}
       </div>
 
-      <div className="w-full lg:w-[440px] flex flex-col gap-6">
+      <RightPanel>
         <AStarCodeViewer codeLine={mode === 'example' ? step.codeLine : 0} />
         <AStarProblemList />
         
@@ -607,7 +608,7 @@ function AStarPage() {
             </p>
           </div>
         )}
-      </div>
+      </RightPanel>
 
       <AStarInfoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
         onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); setMode('example'); }} />
@@ -686,7 +687,7 @@ function BFSDFSPage() {
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
-      <div className="flex-1 flex flex-col bg-card border rounded-xl shadow-sm overflow-hidden min-h-[600px] lg:h-[calc(100vh-140px)]">
+      <div className="flex-1 min-w-[600px] flex flex-col bg-card border rounded-xl shadow-sm overflow-hidden min-h-[600px] lg:h-[calc(100vh-140px)]">
         
         {/* Header Tabs */}
         <div className="flex border-b bg-muted/20 px-4 py-2 gap-4">
@@ -801,10 +802,10 @@ function BFSDFSPage() {
         )}
       </div>
 
-      <div className="w-full lg:w-[440px] flex flex-col gap-6">
+      <RightPanel>
         <BFSDFSCodeViewer codeLine={mode === 'example' ? step.codeLine : 0} mode={algoMode} />
         <BFSDFSProblemList />
-      </div>
+      </RightPanel>
 
       <BFSDFSInfoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} mode={algoMode} />
     </div>
@@ -859,7 +860,7 @@ function BellmanFordPage() {
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-8rem)] lg:flex-row gap-6">
-      <div className="flex-1 border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
+      <div className="flex-1 min-w-[600px] border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
 
         {/* Header */}
         <div className="p-3 lg:p-4 border-b flex justify-between items-center bg-muted/30 flex-wrap gap-3">
@@ -917,11 +918,11 @@ function BellmanFordPage() {
         />
       </div>
 
-      <div className="w-full lg:w-[440px] flex flex-col gap-6">
+      <RightPanel>
         <BFCodeViewer codeLine={step.codeLine} />
         <BFProblemList />
         <BFExtraInfo step={step} />
-      </div>
+      </RightPanel>
 
       <BFInfoModal
         isOpen={isModalOpen}
@@ -979,7 +980,7 @@ function FloydWarshallPage() {
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-8rem)] lg:flex-row gap-6">
-      <div className="flex-1 border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
+      <div className="flex-1 min-w-[600px] border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
 
         {/* Header */}
         <div className="p-3 lg:p-4 border-b flex justify-between items-center bg-muted/30 flex-wrap gap-3">
@@ -1072,11 +1073,10 @@ function FloydWarshallPage() {
         />
       </div>
 
-      {/* Right sidebar */}
-      <div className="w-full lg:w-[440px] flex flex-col gap-6">
+      <RightPanel>
         <FWCodeViewer codeLine={step.codeLine} />
         <FWProblemList />
-      </div>
+      </RightPanel>
 
       <FWInfoModal
         isOpen={isModalOpen}

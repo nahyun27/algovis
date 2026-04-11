@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
 @theme {
+  /* Custom responsive breakpoints */
+  --breakpoint-nw: 75rem;    /* 1200px – sidebar + code panel hide below this */
+  --breakpoint-wp: 87.5rem;  /* 1400px – code panel narrows below this */
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-border: var(--border);
