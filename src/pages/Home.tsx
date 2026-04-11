@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 type Paradigm    = "DP" | "Greedy" | "탐색";
-type ProblemType = "최단경로" | "그래프 탐색" | "최적화";
+type ProblemType = "Shortest Path" | "Traversal" | "Optimization";
 
 interface AlgoCard {
   id: string;
@@ -27,7 +27,7 @@ const ALGORITHMS: AlgoCard[] = [
     description: "모든 도시를 한 번씩 방문하고 출발지로 돌아오는 최단 경로를 비트마스크 DP로 탐색합니다.",
     difficulty: "Hard",
     paradigm: "DP",
-    problemType: "최적화",
+    problemType: "Optimization",
     timeComplexity: "O(N² · 2ᴺ)",
     spaceComplexity: "O(N · 2ᴺ)",
   },
@@ -39,7 +39,7 @@ const ALGORITHMS: AlgoCard[] = [
     description: "음수 가중치가 없는 그래프에서 단일 시작점 최단 경로를 우선순위 큐로 구합니다.",
     difficulty: "Medium",
     paradigm: "Greedy",
-    problemType: "최단경로",
+    problemType: "Shortest Path",
     timeComplexity: "O((V+E) log V)",
     spaceComplexity: "O(V)",
   },
@@ -51,7 +51,7 @@ const ALGORITHMS: AlgoCard[] = [
     description: "휴리스틱 함수를 이용해 목표 노드까지의 최단 경로를 효율적으로 탐색합니다.",
     difficulty: "Medium",
     paradigm: "Greedy",
-    problemType: "최단경로",
+    problemType: "Shortest Path",
     timeComplexity: "O(E log V)",
     spaceComplexity: "O(V)",
   },
@@ -63,7 +63,7 @@ const ALGORITHMS: AlgoCard[] = [
     description: "그래프를 층별(BFS) 또는 경로별(DFS)로 탐색하는 가장 기본적인 알고리즘입니다.",
     difficulty: "Easy",
     paradigm: "탐색",
-    problemType: "그래프 탐색",
+    problemType: "Traversal",
     timeComplexity: "O(V + E)",
     spaceComplexity: "O(V)",
   },
@@ -75,7 +75,7 @@ const ALGORITHMS: AlgoCard[] = [
     description: "음수 간선이 있는 그래프의 단일 출발점 최단 경로를 구하고 음수 사이클을 감지합니다.",
     difficulty: "Medium",
     paradigm: "DP",
-    problemType: "최단경로",
+    problemType: "Shortest Path",
     timeComplexity: "O(V·E)",
     spaceComplexity: "O(V)",
   },
@@ -87,14 +87,11 @@ const ALGORITHMS: AlgoCard[] = [
     description: "모든 노드 쌍의 최단거리를 3중 반복문 DP로 구합니다. 음수 간선 처리 및 음수 사이클 감지 가능.",
     difficulty: "Medium",
     paradigm: "DP",
-    problemType: "최단경로",
+    problemType: "Shortest Path",
     timeComplexity: "O(V³)",
     spaceComplexity: "O(V²)",
   },
 ];
-
-const PARADIGMS: Paradigm[]    = ["DP", "Greedy", "탐색"];
-const PROBLEM_TYPES: ProblemType[] = ["최단경로", "그래프 탐색", "최적화"];
 
 const difficultyStyles = {
   Easy:   "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300",
@@ -108,62 +105,33 @@ const paradigmTagStyles: Record<Paradigm, string> = {
   탐색:   "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300",
 };
 
-const paradigmBtnActive: Record<Paradigm, string> = {
-  DP:     "bg-sky-500    text-white border-sky-500",
-  Greedy: "bg-amber-500  text-white border-amber-500",
-  탐색:   "bg-violet-500 text-white border-violet-500",
-};
-
 const problemTypeTagStyles: Record<ProblemType, string> = {
-  최단경로:    "bg-blue-50   text-blue-600   dark:bg-blue-900/20   dark:text-blue-400",
-  "그래프 탐색": "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400",
-  최적화:     "bg-orange-50  text-orange-600  dark:bg-orange-900/20  dark:text-orange-400",
-};
-
-const problemTypeBtnActive: Record<ProblemType, string> = {
-  최단경로:    "bg-blue-500   text-white border-blue-500",
-  "그래프 탐색": "bg-purple-500 text-white border-purple-500",
-  최적화:     "bg-orange-500  text-white border-orange-500",
+  "Shortest Path":      "bg-blue-50   text-blue-600   dark:bg-blue-900/20   dark:text-blue-400",
+  "Traversal": "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400",
+  "Optimization": "bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400",
 };
 
 export default function Home() {
-  const [query, setQuery]               = useState("");
-  const [activeParadigms, setActiveParadigms] = useState<Set<Paradigm>>(new Set());
-  const [activeTypes, setActiveTypes]   = useState<Set<ProblemType>>(new Set());
-
-  function toggleParadigm(p: Paradigm) {
-    setActiveParadigms(prev => {
-      const next = new Set(prev);
-      next.has(p) ? next.delete(p) : next.add(p);
-      return next;
-    });
-  }
-
-  function toggleType(t: ProblemType) {
-    setActiveTypes(prev => {
-      const next = new Set(prev);
-      next.has(t) ? next.delete(t) : next.add(t);
-      return next;
-    });
-  }
+  const [query, setQuery]           = useState("");
+  const [paradigm, setParadigm]     = useState<Paradigm | "">("");
+  const [problemType, setProblemType] = useState<ProblemType | "">("");
 
   function resetFilters() {
-    setQuery("");
-    setActiveParadigms(new Set());
-    setActiveTypes(new Set());
+    setParadigm("");
+    setProblemType("");
   }
 
-  const hasActiveFilters = query !== "" || activeParadigms.size > 0 || activeTypes.size > 0;
+  const hasActiveFilters = paradigm !== "" || problemType !== "";
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase();
     return ALGORITHMS.filter(a => {
       const matchQ        = a.name.toLowerCase().includes(q) || a.korName.toLowerCase().includes(q);
-      const matchParadigm = activeParadigms.size === 0 || activeParadigms.has(a.paradigm);
-      const matchType     = activeTypes.size === 0    || activeTypes.has(a.problemType);
+      const matchParadigm = paradigm === ""     || a.paradigm === paradigm;
+      const matchType     = problemType === ""  || a.problemType === problemType;
       return matchQ && matchParadigm && matchType;
     });
-  }, [query, activeParadigms, activeTypes]);
+  }, [query, paradigm, problemType]);
 
   return (
     <div className="space-y-10">
@@ -188,86 +156,67 @@ export default function Home() {
       </section>
 
       {/* ── Search + Filters ── */}
-      <div className="flex flex-col gap-3">
-        {/* Search + Reset row */}
-        <div className="flex gap-3 items-center">
-          <div className="relative flex-1 max-w-sm">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+      <div className="flex items-center gap-3">
+        {/* Search — flex:1 */}
+        <div className="relative flex-1">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="알고리즘 검색..."
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            className="w-full h-11 pl-9 pr-4 rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
+          />
+        </div>
+
+        {/* Paradigm select */}
+        <div className="relative shrink-0 w-40">
+          <select
+            value={paradigm}
+            onChange={e => setParadigm(e.target.value as Paradigm | "")}
+            className="w-full h-11 appearance-none rounded-lg border border-border bg-card pl-3 pr-8 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition cursor-pointer"
+          >
+            <option value="">패러다임 전체</option>
+            <option value="DP">DP</option>
+            <option value="Greedy">Greedy</option>
+            <option value="탐색">탐색</option>
+          </select>
+          <svg className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 9l6 6 6-6" />
+          </svg>
+        </div>
+
+        {/* Problem type select */}
+        <div className="relative shrink-0 w-40">
+          <select
+            value={problemType}
+            onChange={e => setProblemType(e.target.value as ProblemType | "")}
+            className="w-full h-11 appearance-none rounded-lg border border-border bg-card pl-3 pr-8 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition cursor-pointer"
+          >
+            <option value="">문제 유형 전체</option>
+            <option value="Shortest Path">Shortest Path</option>
+            <option value="Traversal">Traversal</option>
+            <option value="Optimization">Optimization</option>
+          </select>
+          <svg className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 9l6 6 6-6" />
+          </svg>
+        </div>
+
+        {/* Reset — only visible when a filter is active */}
+        {hasActiveFilters && (
+          <button
+            onClick={resetFilters}
+            aria-label="필터 초기화"
+            className="shrink-0 h-11 w-11 flex items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-all"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-            <input
-              type="text"
-              placeholder="알고리즘 검색..."
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 rounded-lg border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
-            />
-          </div>
-          {hasActiveFilters && (
-            <button
-              onClick={resetFilters}
-              className="px-3 py-2 rounded-lg text-xs font-semibold border border-border bg-card text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-all"
-            >
-              초기화
-            </button>
-          )}
-        </div>
-
-        {/* Paradigm filter row */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide w-16 shrink-0">패러다임</span>
-          <button
-            onClick={() => setActiveParadigms(new Set())}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
-              activeParadigms.size === 0
-                ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                : "bg-card text-muted-foreground border-border hover:bg-muted/60 hover:text-foreground"
-            }`}
-          >
-            All
           </button>
-          {PARADIGMS.map(p => (
-            <button
-              key={p}
-              onClick={() => toggleParadigm(p)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
-                activeParadigms.has(p)
-                  ? paradigmBtnActive[p]
-                  : "bg-card text-muted-foreground border-border hover:bg-muted/60 hover:text-foreground"
-              }`}
-            >
-              {p}
-            </button>
-          ))}
-        </div>
-
-        {/* Problem type filter row */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide w-16 shrink-0">문제 유형</span>
-          <button
-            onClick={() => setActiveTypes(new Set())}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
-              activeTypes.size === 0
-                ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                : "bg-card text-muted-foreground border-border hover:bg-muted/60 hover:text-foreground"
-            }`}
-          >
-            All
-          </button>
-          {PROBLEM_TYPES.map(t => (
-            <button
-              key={t}
-              onClick={() => toggleType(t)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
-                activeTypes.has(t)
-                  ? problemTypeBtnActive[t]
-                  : "bg-card text-muted-foreground border-border hover:bg-muted/60 hover:text-foreground"
-              }`}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
+        )}
       </div>
 
       {/* ── Cards Grid ── */}
