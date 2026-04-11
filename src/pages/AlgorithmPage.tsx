@@ -82,6 +82,13 @@ import KruskalInfoModal    from '../algorithms/kruskal/InfoModal';
 import { generateKruskalSteps } from '../algorithms/kruskal/solver';
 import { KRUSKAL_N, KRUSKAL_NODES, KRUSKAL_EDGES } from '../algorithms/kruskal/types';
 import type { KruskalStep } from '../algorithms/kruskal/types';
+import PrimGraphCanvas  from '../algorithms/prim/GraphCanvas';
+import PrimCodeViewer   from '../algorithms/prim/CodeViewer';
+import PrimProblemList  from '../algorithms/prim/ProblemList';
+import PrimKeyTable     from '../algorithms/prim/KeyTable';
+import PrimInfoModal    from '../algorithms/prim/InfoModal';
+import { generatePrimSteps } from '../algorithms/prim/solver';
+import type { PrimStep } from '../algorithms/prim/types';
 
 // Topological Sort
 import TopoGraphCanvas   from '../algorithms/topological/GraphCanvas';
@@ -983,11 +990,6 @@ function FloydWarshallPage() {
     return () => clearTimeout(t);
   }, [isPlaying, currentStepIdx, steps.length]);
 
-  // Reset path view when stepping away from done
-  useEffect(() => {
-    if (!isDone) setShowPath(false);
-  }, [isDone]);
-
   const pathNodes = useMemo(() => {
     if (!showPath || !isDone) return [];
     return reconstructPath(step.nextMatrix, pathFrom, pathTo);
@@ -1289,16 +1291,29 @@ function TopologicalPage() {
 
 /* ─────────────── Kruskal Page ─────────────── */
 
-function KruskalPage() {
-  const [currentStepIdx, setCurrentStepIdx] = useState(0);
-  const [isPlaying, setIsPlaying]           = useState(false);
-  const [isModalOpen, setIsModalOpen]       = useState(false);
+type KruskalPrimTab = 'kruskal' | 'prim';
 
-  const steps = useMemo<KruskalStep[]>(
-    () => generateKruskalSteps(KRUSKAL_NODES, KRUSKAL_EDGES, KRUSKAL_N),
-    [],
+function KruskalPage() {
+  const [tab, setTab]                         = useState<KruskalPrimTab>('kruskal');
+  const [kruskalIdx, setKruskalIdx]           = useState(0);
+  const [primIdx, setPrimIdx]                 = useState(0);
+  const [isPlaying, setIsPlaying]             = useState(false);
+  const [isKruskalModalOpen, setKruskalModal] = useState(false);
+  const [isPrimModalOpen, setPrimModal]       = useState(false);
+
+  const kruskalSteps = useMemo<KruskalStep[]>(
+    () => generateKruskalSteps(KRUSKAL_NODES, KRUSKAL_EDGES, KRUSKAL_N), [],
   );
-  const step = steps[currentStepIdx] ?? steps[0];
+  const primSteps = useMemo<PrimStep[]>(
+    () => generatePrimSteps(KRUSKAL_NODES, KRUSKAL_EDGES, KRUSKAL_N), [],
+  );
+
+  const steps           = tab === 'kruskal' ? kruskalSteps : primSteps;
+  const currentStepIdx  = tab === 'kruskal' ? kruskalIdx   : primIdx;
+  const setCurrentStepIdx = tab === 'kruskal' ? setKruskalIdx : setPrimIdx;
+
+  const kStep = kruskalSteps[kruskalIdx] ?? kruskalSteps[0];
+  const pStep = primSteps[primIdx]       ?? primSteps[0];
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -1308,89 +1323,231 @@ function KruskalPage() {
     }
     const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 800);
     return () => clearTimeout(t);
-  }, [isPlaying, currentStepIdx, steps.length]);
+  }, [isPlaying, currentStepIdx, steps.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const stepType = step.type as string;
+  const handleTabChange = (newTab: KruskalPrimTab) => {
+    setTab(newTab);
+    setIsPlaying(false);
+  };
 
-  const bannerClass =
-    stepType === 'REJECT'
-      ? 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-red-100 dark:border-red-900/50'
-      : stepType === 'ACCEPT'
-        ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200 border-emerald-100 dark:border-emerald-900/50'
-        : stepType === 'DONE'
-          ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-800 dark:text-teal-200 border-teal-100 dark:border-teal-900/50'
-          : 'bg-zinc-100 dark:bg-accent/50 text-zinc-700 dark:text-muted-foreground border-zinc-200 dark:border-accent';
+  /* ── Kruskal badge / banner ── */
+  const kType = kStep.type as string;
+  const kruskalBadgeClass =
+    kType === 'REJECT'   ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700' :
+    kType === 'ACCEPT'   ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700' :
+    kType === 'FIND'     ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' :
+    kType === 'CONSIDER' ? 'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 border-sky-300 dark:border-sky-700' :
+    kType === 'DONE'     ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-700' :
+    'bg-muted text-muted-foreground border-border';
+  const kruskalBannerClass =
+    kType === 'REJECT' ? 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200' :
+    kType === 'ACCEPT' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200' :
+    kType === 'DONE'   ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-800 dark:text-teal-200' :
+    'bg-zinc-100 dark:bg-accent/50 text-zinc-700 dark:text-muted-foreground';
+
+  /* ── Prim badge / banner ── */
+  const pType = pStep.type as string;
+  const primBadgeClass =
+    pType === 'ADD_TO_MST'     ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700' :
+    pType === 'UPDATE'         ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700' :
+    pType === 'EXTRACT_MIN'    ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' :
+    pType === 'ALREADY_IN_MST' ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-700' :
+    pType === 'DONE'           ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-700' :
+    'bg-muted text-muted-foreground border-border';
+  const primBannerClass =
+    pType === 'ADD_TO_MST'     ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200' :
+    pType === 'UPDATE'         ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200' :
+    pType === 'ALREADY_IN_MST' ? 'bg-zinc-100 dark:bg-accent/50 text-zinc-600 dark:text-muted-foreground' :
+    pType === 'DONE'           ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-800 dark:text-teal-200' :
+    'bg-zinc-100 dark:bg-accent/50 text-zinc-700 dark:text-muted-foreground';
+
+  /* ── MST summary (shared) ── */
+  const activeMstEdges = tab === 'kruskal' ? kStep.mstEdges : pStep.mstEdges;
+  const activeTotalCost = tab === 'kruskal' ? kStep.totalCost : pStep.totalCost;
+  const isDone = tab === 'kruskal' ? kType === 'DONE' : pType === 'DONE';
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-8rem)] lg:flex-row gap-6">
       <div className="flex-1 min-w-[600px] border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
 
-        {/* Header */}
+        {/* ── Tab bar ── */}
+        <div className="flex border-b bg-muted/20 px-4 py-2 gap-2">
+          <button
+            onClick={() => handleTabChange('kruskal')}
+            className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${
+              tab === 'kruskal'
+                ? 'bg-white dark:bg-zinc-800 shadow-sm text-emerald-600 dark:text-emerald-400'
+                : 'text-muted-foreground hover:bg-white/50 dark:hover:bg-zinc-800/50'
+            }`}
+          >
+            크루스칼 (Kruskal)
+          </button>
+          <button
+            onClick={() => handleTabChange('prim')}
+            className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${
+              tab === 'prim'
+                ? 'bg-white dark:bg-zinc-800 shadow-sm text-sky-600 dark:text-sky-400'
+                : 'text-muted-foreground hover:bg-white/50 dark:hover:bg-zinc-800/50'
+            }`}
+          >
+            프림 (Prim)
+          </button>
+        </div>
+
+        {/* ── Header ── */}
         <div className="p-3 lg:p-4 border-b flex justify-between items-center bg-muted/30 flex-wrap gap-3">
           <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="font-semibold text-base lg:text-lg tracking-tight">크루스칼 MST 시각화</h2>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors"
-            >크루스칼이란? 💡</button>
+            {tab === 'kruskal' ? (
+              <>
+                <h2 className="font-semibold text-base lg:text-lg tracking-tight">크루스칼 MST 시각화</h2>
+                <button
+                  onClick={() => setKruskalModal(true)}
+                  className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors"
+                >크루스칼이란? 💡</button>
+              </>
+            ) : (
+              <>
+                <h2 className="font-semibold text-base lg:text-lg tracking-tight">프림 MST 시각화</h2>
+                <button
+                  onClick={() => setPrimModal(true)}
+                  className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-sky-300 dark:border-sky-700 text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/30 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors"
+                >프림이란? 💡</button>
+              </>
+            )}
           </div>
-          <div className={`text-xs font-bold px-3 py-1 rounded-full border ${
-            stepType === 'REJECT'   ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700' :
-            stepType === 'ACCEPT'   ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700' :
-            stepType === 'FIND'     ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' :
-            stepType === 'CONSIDER' ? 'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 border-sky-300 dark:border-sky-700' :
-            stepType === 'DONE'     ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-700' :
-            'bg-muted text-muted-foreground border-border'
-          }`}>{stepType}</div>
+          {/* Status badge */}
+          {tab === 'kruskal' ? (
+            <div className={`text-xs font-bold px-3 py-1 rounded-full border ${kruskalBadgeClass}`}>{kType}</div>
+          ) : (
+            <div className={`text-xs font-bold px-3 py-1 rounded-full border ${primBadgeClass}`}>{pType}</div>
+          )}
         </div>
 
-        {/* Banner */}
-        <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>
-          {step.description}
+        {/* ── Banner ── */}
+        <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${
+          tab === 'kruskal' ? kruskalBannerClass : primBannerClass
+        }`}>
+          {tab === 'kruskal' ? kStep.description : pStep.description}
         </div>
 
-        {/* Main content: 상단 그래프+간선목록 / 하단 UnionFind+MST요약 */}
+        {/* ── Main content ── */}
         <div className="flex-1 flex flex-col overflow-hidden min-h-0">
-          {/* Top: Graph (left) + EdgeList (right, scrollable) */}
-          <div className="flex-1 flex flex-row divide-x divide-border overflow-hidden min-h-0">
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <KruskalGraphCanvas step={step} nodes={KRUSKAL_NODES} edges={KRUSKAL_EDGES} />
-            </div>
-            <div className="w-[260px] shrink-0 overflow-y-auto p-3">
-              <KruskalEdgeList step={step} />
-            </div>
-          </div>
 
-          {/* Bottom: UnionFind (left, flex-1) + MST Summary (right, w-[200px]) */}
-          <div className="h-[270px] shrink-0 flex flex-row divide-x divide-border border-t overflow-hidden">
-            <div className="flex-1 overflow-auto p-3">
-              <UnionFindDisplay step={step} N={KRUSKAL_N} />
-            </div>
-            <div className="w-[200px] shrink-0 p-3 overflow-y-auto bg-card/30 flex flex-col gap-2">
-              <p className="text-xs font-semibold text-muted-foreground">MST 결과</p>
-              {step.mstEdges.length === 0 ? (
-                <p className="text-xs text-muted-foreground italic">아직 간선 없음...</p>
-              ) : (
-                <div className="flex flex-col gap-1">
-                  {step.mstEdges.map((e, i) => (
-                    <div key={i} className="flex items-center justify-between text-xs bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded px-2 py-1">
-                      <span className="font-mono font-semibold">{e.u} – {e.v}</span>
-                      <span className="font-bold text-emerald-700 dark:text-emerald-300">w={e.weight}</span>
+          {tab === 'kruskal' ? (
+            <>
+              {/* Top: Graph + EdgeList */}
+              <div className="flex-1 flex flex-row divide-x divide-border overflow-hidden min-h-0">
+                <div className="flex-1 flex flex-col overflow-hidden">
+                  <KruskalGraphCanvas step={kStep} nodes={KRUSKAL_NODES} edges={KRUSKAL_EDGES} />
+                </div>
+                <div className="w-[260px] shrink-0 overflow-y-auto p-3">
+                  <KruskalEdgeList step={kStep} />
+                </div>
+              </div>
+              {/* Bottom: UnionFind + MST summary */}
+              <div className="h-[270px] shrink-0 flex flex-row divide-x divide-border border-t overflow-hidden">
+                <div className="flex-1 overflow-auto p-3">
+                  <UnionFindDisplay step={kStep} N={KRUSKAL_N} />
+                </div>
+                <div className="w-[200px] shrink-0 p-3 overflow-y-auto bg-card/30 flex flex-col gap-2">
+                  <p className="text-xs font-semibold text-muted-foreground">MST 결과</p>
+                  {activeMstEdges.length === 0 ? (
+                    <p className="text-xs text-muted-foreground italic">아직 간선 없음...</p>
+                  ) : (
+                    <div className="flex flex-col gap-1">
+                      {activeMstEdges.map((e, i) => (
+                        <div key={i} className="flex items-center justify-between text-xs bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded px-2 py-1">
+                          <span className="font-mono font-semibold">{e.u} – {e.v}</span>
+                          <span className="font-bold text-emerald-700 dark:text-emerald-300">w={e.weight}</span>
+                        </div>
+                      ))}
+                      <div className="mt-1 pt-1 border-t flex justify-between text-xs font-bold">
+                        <span className="text-muted-foreground">총 비용</span>
+                        <span className="text-emerald-700 dark:text-emerald-300">{activeTotalCost}</span>
+                      </div>
                     </div>
-                  ))}
-                  <div className="mt-1 pt-1 border-t flex justify-between text-xs font-bold">
-                    <span className="text-muted-foreground">총 비용</span>
-                    <span className="text-emerald-700 dark:text-emerald-300">{step.totalCost}</span>
+                  )}
+                  {isDone && (
+                    <div className="mt-1 text-[10px] font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30 px-2 py-1 rounded-full text-center">
+                      ✓ MST 완성
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Top: Graph (full width) */}
+              <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+                <PrimGraphCanvas step={pStep} nodes={KRUSKAL_NODES} edges={KRUSKAL_EDGES} />
+              </div>
+
+              {/* Bottom: Key/Parent + PQ (left) | MST 결과 (right) */}
+              <div className="h-[370px] shrink-0 flex flex-row divide-x divide-border border-t overflow-hidden">
+                {/* 하단 좌측: Key/Parent 배열 + 우선순위 큐 */}
+                <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-3">
+                  <PrimKeyTable step={pStep} N={KRUSKAL_N} />
+
+                  {/* Priority Queue */}
+                  <div className="border rounded-xl overflow-hidden shadow-sm shrink-0">
+                    <div className="p-2.5 border-b bg-muted/30">
+                      <h3 className="font-semibold text-xs">우선순위 큐 (Priority Queue)</h3>
+                    </div>
+                    <div className="p-2.5 flex flex-wrap gap-1.5 items-center">
+                      {(() => {
+                        const dedupedPQ = [...pStep.pq]
+                          .sort((a, b) => a.key - b.key)
+                          .filter((item, _, arr) => arr.find(x => x.node === item.node) === item);
+                        return dedupedPQ.length === 0
+                          ? <span className="text-[11px] text-muted-foreground italic">비어있음</span>
+                          : dedupedPQ.map((item, idx) => (
+                            <div key={`${item.node}-${item.key}`}
+                              className={`flex items-center gap-1 px-2 py-1 rounded-md border text-[11px] font-semibold ${
+                                idx === 0
+                                  ? 'bg-blue-100 dark:bg-blue-900/40 border-blue-300 dark:border-blue-700 text-blue-800 dark:text-blue-200'
+                                  : 'bg-card border-border text-muted-foreground'
+                              }`}
+                            >
+                              <span className="font-mono">{item.key >= 1e9 ? '∞' : item.key}</span>
+                              <span className="opacity-40">·</span>
+                              <span className="font-mono">노드{item.node}</span>
+                              {idx === 0 && <span className="text-[8px] text-blue-500 font-bold ml-0.5">↑next</span>}
+                            </div>
+                          ));
+                      })()}
+                    </div>
+                    <div className="px-2.5 pb-1.5 text-[9px] text-muted-foreground">key 오름차순</div>
                   </div>
                 </div>
-              )}
-              {stepType === 'DONE' && (
-                <div className="mt-1 text-[10px] font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30 px-2 py-1 rounded-full text-center">
-                  ✓ MST 완성
+
+                {/* 하단 우측: MST 결과 */}
+                <div className="w-[200px] shrink-0 p-3 overflow-y-auto bg-card/30 flex flex-col gap-2">
+                  <p className="text-xs font-semibold text-muted-foreground">MST 결과</p>
+                  {activeMstEdges.length === 0 ? (
+                    <p className="text-xs text-muted-foreground italic">아직 간선 없음...</p>
+                  ) : (
+                    <div className="flex flex-col gap-1">
+                      {activeMstEdges.map((e, i) => (
+                        <div key={i} className="flex items-center justify-between text-xs bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded px-2 py-1">
+                          <span className="font-mono font-semibold">{e.u} – {e.v}</span>
+                          <span className="font-bold text-emerald-700 dark:text-emerald-300">w={e.weight}</span>
+                        </div>
+                      ))}
+                      <div className="mt-1 pt-1 border-t flex justify-between text-xs font-bold">
+                        <span className="text-muted-foreground">총 비용</span>
+                        <span className="text-emerald-700 dark:text-emerald-300">{activeTotalCost}</span>
+                      </div>
+                      {isDone && (
+                        <div className="mt-1 text-[10px] font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30 px-2 py-1 rounded-full text-center">
+                          ✓ 크루스칼과 동일
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
+            </>
+          )}
         </div>
 
         <StepController
@@ -1404,14 +1561,28 @@ function KruskalPage() {
       </div>
 
       <RightPanel>
-        <KruskalCodeViewer codeLine={step.codeLine} />
-        <KruskalProblemList />
+        {tab === 'kruskal' ? (
+          <>
+            <KruskalCodeViewer codeLine={kStep.codeLine} />
+            <KruskalProblemList />
+          </>
+        ) : (
+          <>
+            <PrimCodeViewer codeLine={pStep.codeLine} />
+            <PrimProblemList />
+          </>
+        )}
       </RightPanel>
 
       <KruskalInfoModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); }}
+        isOpen={isKruskalModalOpen}
+        onClose={() => setKruskalModal(false)}
+        onStartVisualization={() => { setKruskalIdx(0); setIsPlaying(true); }}
+      />
+      <PrimInfoModal
+        isOpen={isPrimModalOpen}
+        onClose={() => setPrimModal(false)}
+        onStartVisualization={() => { setPrimIdx(0); setIsPlaying(true); }}
       />
     </div>
   );
