@@ -1449,7 +1449,7 @@ function KruskalPage() {
                 <div className="flex-1 overflow-auto p-3">
                   <UnionFindDisplay step={kStep} N={KRUSKAL_N} />
                 </div>
-                <div className="w-[200px] shrink-0 p-3 overflow-y-auto bg-card/30 flex flex-col gap-2">
+                <div className="w-[220px] shrink-0 p-3 overflow-y-auto bg-card/30 flex flex-col gap-2">
                   <p className="text-xs font-semibold text-muted-foreground">MST 결과</p>
                   {activeMstEdges.length === 0 ? (
                     <p className="text-xs text-muted-foreground italic">아직 간선 없음...</p>
@@ -1478,7 +1478,7 @@ function KruskalPage() {
           ) : (
             <>
               {/* Top: Graph (full width) */}
-              <div className="h-[240px] shrink-0 flex flex-col overflow-hidden">
+              <div className="h-[300px] shrink-0 flex flex-col overflow-hidden">
                 <PrimGraphCanvas step={pStep} nodes={KRUSKAL_NODES} edges={KRUSKAL_EDGES} />
               </div>
 
@@ -1521,7 +1521,7 @@ function KruskalPage() {
                 </div>
 
                 {/* 하단 우측: MST 결과 */}
-                <div className="w-[200px] shrink-0 p-3 overflow-y-auto bg-card/30 flex flex-col gap-2">
+                <div className="w-[220px] shrink-0 p-3 overflow-y-auto bg-card/30 flex flex-col gap-2">
                   <p className="text-xs font-semibold text-muted-foreground">MST 결과</p>
                   {activeMstEdges.length === 0 ? (
                     <p className="text-xs text-muted-foreground italic">아직 간선 없음...</p>
