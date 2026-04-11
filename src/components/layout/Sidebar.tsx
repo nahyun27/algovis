@@ -10,7 +10,8 @@ export default function Sidebar() {
     { name: 'Dijkstra',      path: '/algorithm/dijkstra',  icon: FileCode2  },
     { name: 'A* Search',     path: '/algorithm/astar',     icon: FileCode2  },
     { name: 'BFS / DFS',     path: '/algorithm/bfsdfs',    icon: FileCode2  },
-    { name: 'Bellman-Ford',  path: '/algorithm/bellmanford', icon: FileCode2 },
+    { name: 'Bellman-Ford',   path: '/algorithm/bellmanford',   icon: FileCode2 },
+    { name: 'Floyd-Warshall', path: '/algorithm/floyd-warshall', icon: FileCode2 },
   ];
 
   return (

@@ -70,6 +70,17 @@ const ALGORITHMS: AlgoCard[] = [
     timeComplexity: "O(V·E)",
     spaceComplexity: "O(V)",
   },
+  {
+    id: "floydwarshall",
+    name: "Floyd-Warshall",
+    korName: "플로이드-워셜",
+    slug: "floyd-warshall",
+    description: "모든 노드 쌍의 최단거리를 3중 반복문 DP로 구합니다. 음수 간선 처리 및 음수 사이클 감지 가능.",
+    difficulty: "Medium",
+    category: "DP",
+    timeComplexity: "O(V³)",
+    spaceComplexity: "O(V²)",
+  },
 ];
 
 const CATEGORIES = ["All", "Graph", "DP", "Pathfinding"] as const;

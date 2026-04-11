@@ -28,12 +28,12 @@ export default function QueueStackDisplay({ step, mode }: QueueStackDisplayProps
         <h3 className="font-semibold tracking-tight text-sm flex items-center gap-2">
           {isBFS ? (
             <>
-              📦 큐 (Queue) 상태
+              📦 큐 (Queue)
               <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded ml-2">FIFO (First-In, First-Out)</span>
             </>
           ) : (
             <>
-              📚 스택 (Stack) 상태
+              📚 스택 (Stack)
               <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded ml-2">LIFO (Last-In, First-Out)</span>
             </>
           )}

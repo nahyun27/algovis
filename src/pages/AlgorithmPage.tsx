@@ -61,6 +61,16 @@ import {
 } from '../algorithms/bellmanford/types';
 import type { BellmanFordStep } from '../algorithms/bellmanford/types';
 
+// Floyd-Warshall
+import FWGraphCanvas  from '../algorithms/floydwarshall/GraphCanvas';
+import FWCodeViewer   from '../algorithms/floydwarshall/CodeViewer';
+import FWProblemList  from '../algorithms/floydwarshall/ProblemList';
+import FWDistMatrix   from '../algorithms/floydwarshall/DistMatrix';
+import FWInfoModal    from '../algorithms/floydwarshall/InfoModal';
+import { generateFloydWarshallSteps, reconstructPath } from '../algorithms/floydwarshall/solver';
+import { FW_N } from '../algorithms/floydwarshall/types';
+import type { FloydWarshallStep } from '../algorithms/floydwarshall/types';
+
 /* ─────────────── helpers ─────────────── */
 
 type PageMode = 'example' | 'editor';
@@ -368,7 +378,7 @@ function DijkstraPage() {
             </div>
 
             <div className="flex-1 flex flex-col bg-muted/5 divide-y divide-border overflow-hidden min-h-0 relative">
-              <div className="w-full flex flex-col relative overflow-y-auto group border-b" style={{ minHeight: '40%' }}>
+              <div className="w-full flex-1 flex flex-col relative overflow-y-auto group border-b">
                 <DijkstraGraphCanvas
                   step={step} shortestEdges={shortestEdges}
                   customNodes={customNodes} customEdges={customEdges}
@@ -382,7 +392,7 @@ function DijkstraPage() {
                   <span>직접 만들기</span>
                 </button>
               </div>
-              <div className="w-full flex-1 p-3 xl:p-5 overflow-auto min-h-[250px]">
+              <div className="w-full p-3 xl:p-5 overflow-auto">
                 <DijkstraDistTable step={step} />
               </div>
             </div>
@@ -529,7 +539,7 @@ function AStarPage() {
             </div>
 
             <div className="flex-1 flex flex-col bg-muted/5 divide-y divide-border overflow-hidden min-h-0 relative">
-              <div className="w-full flex flex-col relative overflow-y-auto group border-b" style={{ minHeight: '40%' }}>
+              <div className="w-full flex-1 flex flex-col relative overflow-y-auto group border-b">
                 <AStarGraphCanvas
                   step={step} shortestEdges={shortestEdges}
                   customNodes={customNodes} customEdges={customEdges}
@@ -543,7 +553,7 @@ function AStarPage() {
                   <span>직접 만들기</span>
                 </button>
               </div>
-              <div className="w-full flex-1 p-3 xl:p-5 overflow-auto flex flex-col gap-4">
+              <div className="w-full p-3 xl:p-5 overflow-auto flex flex-col gap-4">
                 <AStarScoreTable step={step} />
               </div>
             </div>
@@ -889,10 +899,10 @@ function BellmanFordPage() {
         </div>
 
         <div className="flex-1 flex flex-col bg-muted/5 divide-y divide-border overflow-hidden min-h-0 relative">
-          <div className="w-full flex flex-col relative overflow-y-auto group border-b" style={{ minHeight: '40%' }}>
+          <div className="w-full flex-1 flex flex-col relative overflow-y-auto group border-b">
             <BFGraphCanvas step={step} nodes={nodes} edges={edges} />
           </div>
-          <div className="w-full flex-1 p-3 xl:p-5 overflow-auto min-h-[250px]">
+          <div className="w-full p-3 xl:p-5 overflow-auto">
             <BFDistanceTable step={step} />
           </div>
         </div>
@@ -922,14 +932,170 @@ function BellmanFordPage() {
   );
 }
 
+/* ─────────────── Floyd-Warshall Page ─────────────── */
+
+function FloydWarshallPage() {
+  const [currentStepIdx, setCurrentStepIdx] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pathFrom, setPathFrom] = useState<number>(0);
+  const [pathTo, setPathTo] = useState<number>(FW_N - 1);
+  const [showPath, setShowPath] = useState(false);
+
+  const steps = useMemo<FloydWarshallStep[]>(() => generateFloydWarshallSteps(), []);
+  const step = steps[currentStepIdx] ?? steps[0];
+  const isDone = step.type === 'DONE';
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    if (currentStepIdx >= steps.length - 1) {
+      const t = window.setTimeout(() => setIsPlaying(false), 0);
+      return () => clearTimeout(t);
+    }
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 700);
+    return () => clearTimeout(t);
+  }, [isPlaying, currentStepIdx, steps.length]);
+
+  // Reset path view when stepping away from done
+  useEffect(() => {
+    if (!isDone) setShowPath(false);
+  }, [isDone]);
+
+  const pathNodes = useMemo(() => {
+    if (!showPath || !isDone) return [];
+    return reconstructPath(step.nextMatrix, pathFrom, pathTo);
+  }, [showPath, isDone, step.nextMatrix, pathFrom, pathTo]);
+
+  const bannerClass =
+    step.type === 'NEGATIVE_CYCLE'
+      ? 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-red-100 dark:border-red-900/50'
+      : step.type === 'DONE'
+        ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200 border-emerald-100 dark:border-emerald-900/50'
+        : step.isUpdate
+          ? 'bg-yellow-50 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 border-yellow-100 dark:border-yellow-900/50'
+          : 'bg-zinc-100 dark:bg-accent/50 text-zinc-700 dark:text-muted-foreground border-zinc-200 dark:border-accent';
+
+  const nodeOptions = Array.from({ length: FW_N }, (_, i) => i);
+
+  return (
+    <div className="flex flex-col min-h-[calc(100vh-8rem)] lg:flex-row gap-6">
+      <div className="flex-1 border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
+
+        {/* Header */}
+        <div className="p-3 lg:p-4 border-b flex justify-between items-center bg-muted/30 flex-wrap gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            <h2 className="font-semibold text-base lg:text-lg tracking-tight">플로이드-워셜 최단경로 시각화</h2>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-violet-300 dark:border-violet-700 text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/30 hover:bg-violet-100 dark:hover:bg-violet-900/50 transition-colors"
+            >플로이드-워셜이란? 💡</button>
+          </div>
+          <div className={`text-xs font-bold px-3 py-1 rounded-full border ${
+            step.type === 'NEGATIVE_CYCLE' ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700' :
+            step.type === 'DONE'           ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700' :
+            step.type === 'UPDATE'         ? 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-700' :
+            step.type === 'ROUND_START'    ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 border-violet-300 dark:border-violet-700' :
+            'bg-muted text-muted-foreground border-border'
+          }`}>{step.type}</div>
+        </div>
+
+        {/* Banner */}
+        <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>
+          {step.description}
+        </div>
+
+        {/* Path reconstruction controls (shown only when done) */}
+        {isDone && (
+          <div className="px-4 py-2.5 border-b bg-violet-50/50 dark:bg-violet-900/10 flex items-center gap-3 flex-wrap text-sm">
+            <span className="font-semibold text-violet-700 dark:text-violet-400 text-xs">경로 탐색:</span>
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-muted-foreground">출발</label>
+              <select
+                value={pathFrom}
+                onChange={e => { setPathFrom(Number(e.target.value)); setShowPath(false); }}
+                className="text-xs border rounded px-2 py-1 bg-card text-foreground"
+              >
+                {nodeOptions.map(n => <option key={n} value={n}>{n}</option>)}
+              </select>
+            </div>
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-muted-foreground">도착</label>
+              <select
+                value={pathTo}
+                onChange={e => { setPathTo(Number(e.target.value)); setShowPath(false); }}
+                className="text-xs border rounded px-2 py-1 bg-card text-foreground"
+              >
+                {nodeOptions.map(n => <option key={n} value={n}>{n}</option>)}
+              </select>
+            </div>
+            <button
+              onClick={() => setShowPath(p => !p)}
+              disabled={pathFrom === pathTo}
+              className={`text-xs font-semibold px-3 py-1 rounded-lg border transition-colors disabled:opacity-40 ${
+                showPath
+                  ? 'bg-violet-600 text-white border-violet-600'
+                  : 'bg-card border-violet-300 dark:border-violet-700 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30'
+              }`}
+            >
+              {showPath ? '경로 숨기기' : '경로 보기'}
+            </button>
+            {showPath && pathNodes.length > 0 && (
+              <span className="text-xs font-mono text-violet-700 dark:text-violet-300 bg-violet-100 dark:bg-violet-900/30 px-2 py-1 rounded">
+                {pathNodes.join(' → ')}
+                {' '}(거리: {step.distMatrix[pathFrom]?.[pathTo] >= 1e9 ? '∞' : step.distMatrix[pathFrom]?.[pathTo]})
+              </span>
+            )}
+            {showPath && pathNodes.length === 0 && (
+              <span className="text-xs text-red-500">경로 없음</span>
+            )}
+          </div>
+        )}
+
+        <div className="flex-1 flex flex-col bg-muted/5 divide-y divide-border overflow-hidden min-h-0 relative">
+          {/* Graph canvas - top */}
+          <div className="w-full flex-1 flex flex-col relative overflow-y-auto group border-b min-h-[260px]">
+            <FWGraphCanvas step={step} pathNodes={pathNodes} />
+          </div>
+          {/* Distance matrix - bottom, full width */}
+          <div className="w-full p-3 xl:p-5 overflow-auto">
+            <FWDistMatrix step={step} />
+          </div>
+        </div>
+
+        <StepController
+          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying}
+          onPlayPause={() => setIsPlaying(p => !p)}
+          onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
+          onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
+          onFirst={() => { setIsPlaying(false); setCurrentStepIdx(0); }}
+          onLast={() => { setIsPlaying(false); setCurrentStepIdx(steps.length - 1); }}
+        />
+      </div>
+
+      {/* Right sidebar */}
+      <div className="w-full lg:w-[440px] flex flex-col gap-6">
+        <FWCodeViewer codeLine={step.codeLine} />
+        <FWProblemList />
+      </div>
+
+      <FWInfoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); }}
+      />
+    </div>
+  );
+}
+
 /* ─────────────── Router ─────────────── */
 export default function AlgorithmPage() {
   const { slug } = useParams();
-  if (slug === 'tsp')         return <TSPPage />;
-  if (slug === 'dijkstra')    return <DijkstraPage />;
-  if (slug === 'astar')       return <AStarPage />;
-  if (slug === 'bfsdfs')      return <BFSDFSPage />;
-  if (slug === 'bellmanford') return <BellmanFordPage />;
+  if (slug === 'tsp')           return <TSPPage />;
+  if (slug === 'dijkstra')      return <DijkstraPage />;
+  if (slug === 'astar')         return <AStarPage />;
+  if (slug === 'bfsdfs')        return <BFSDFSPage />;
+  if (slug === 'bellmanford')   return <BellmanFordPage />;
+  if (slug === 'floyd-warshall') return <FloydWarshallPage />;
   return <div className="p-8 text-center text-muted-foreground">알고리즘을 찾을 수 없습니다.</div>;
 }
 
