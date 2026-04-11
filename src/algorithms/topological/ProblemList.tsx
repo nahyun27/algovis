@@ -1,64 +1,45 @@
-const PROBLEMS = [
-  {
-    num: '2252',
-    title: '줄 세우기',
-    difficulty: 'Gold III',
-    url: 'https://www.acmicpc.net/problem/2252',
-    desc: '기본 위상정렬',
-  },
-  {
-    num: '1005',
-    title: 'ACM Craft',
-    difficulty: 'Gold III',
-    url: 'https://www.acmicpc.net/problem/1005',
-    desc: '위상정렬 + DP',
-  },
-  {
-    num: '1516',
-    title: '게임 개발',
-    difficulty: 'Gold III',
-    url: 'https://www.acmicpc.net/problem/1516',
-    desc: '위상정렬 + DP',
-  },
-  {
-    num: '2623',
-    title: '음악프로그램',
-    difficulty: 'Gold III',
-    url: 'https://www.acmicpc.net/problem/2623',
-    desc: '위상정렬 응용',
-  },
-];
+import { ExternalLink } from 'lucide-react';
 
-const diffColor: Record<string, string> = {
-  'Gold III':   'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
-  'Gold IV':    'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
-};
+const PROBLEMS = [
+  { id: 2252, title: '줄 세우기',    tier: 'Gold III', nLimit: 'N ≤ 32,000',  note: '기본 위상정렬' },
+  { id: 1005, title: 'ACM Craft',    tier: 'Gold III', nLimit: 'T,N ≤ 1,000', note: '위상정렬 + DP' },
+  { id: 1516, title: '게임 개발',    tier: 'Gold III', nLimit: 'N ≤ 500',      note: '위상정렬 + DP' },
+  { id: 2623, title: '음악프로그램', tier: 'Gold III', nLimit: 'N ≤ 1,000',   note: '위상정렬 응용' },
+];
 
 export default function TopoProblemList() {
   return (
-    <div className="border rounded-xl bg-card shadow-sm overflow-hidden flex flex-col flex-shrink-0">
-      <div className="p-3 border-b bg-muted/30">
-        <h2 className="font-semibold tracking-tight text-sm">관련 백준 문제</h2>
+    <div className="border rounded-xl bg-card shadow-sm overflow-hidden flex flex-col min-h-64">
+      <div className="p-3 border-b bg-muted/30 flex-shrink-0">
+        <h2 className="font-semibold tracking-tight text-sm">Related Problems (BOJ)</h2>
       </div>
-      <div className="divide-y">
-        {PROBLEMS.map(p => (
-          <a
-            key={p.num}
-            href={p.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3 hover:bg-muted/40 transition-colors group"
-          >
-            <span className="text-xs font-mono text-muted-foreground w-10 shrink-0">#{p.num}</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium group-hover:text-primary transition-colors truncate">{p.title}</p>
-              <p className="text-[11px] text-muted-foreground">{p.desc}</p>
-            </div>
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${diffColor[p.difficulty] ?? 'bg-muted text-muted-foreground'}`}>
-              {p.difficulty}
-            </span>
-          </a>
-        ))}
+      <div className="p-0 overflow-y-auto">
+        <ul className="divide-y divide-border">
+          {PROBLEMS.map(prob => (
+            <li key={prob.id} className="p-4 hover:bg-muted/50 transition-colors">
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-sm bg-muted/50 px-1 rounded">{prob.id}</span>
+                  <span className="font-semibold text-sm">{prob.title}</span>
+                  <a href={`https://acmicpc.net/problem/${prob.id}`} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+                <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold tracking-wide border
+                  ${prob.tier.startsWith('Gold')
+                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800'
+                    : 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700'}`}
+                >
+                  {prob.tier}
+                </span>
+              </div>
+              <div className="flex gap-2 mt-2 text-xs font-medium text-muted-foreground">
+                <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded shadow-sm">{prob.nLimit}</span>
+                <span className="bg-muted px-1.5 py-0.5 rounded shadow-sm">{prob.note}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
