@@ -33,7 +33,7 @@ export default function DijkstraCodeViewer({ codeLine }: { codeLine: number }) {
   };
 
   return (
-    <div className="border rounded-xl bg-[var(--code-bg)] shadow-sm overflow-hidden flex flex-col flex-shrink-0 max-h-[540px]">
+    <div className="border rounded-xl bg-card shadow-sm overflow-hidden flex flex-col flex-shrink-0 max-h-[540px]">
       <div className="p-3 border-b bg-muted/30 flex items-center justify-between gap-2">
         <h2 className="font-semibold tracking-tight text-sm truncate">Source Code (Dijkstra)</h2>
         <button
@@ -47,7 +47,7 @@ export default function DijkstraCodeViewer({ codeLine }: { codeLine: number }) {
           {copied ? <><Check className="w-3 h-3" /> 복사됨!</> : <><Copy className="w-3 h-3" /> 복사</>}
         </button>
       </div>
-      <div className="flex-1 overflow-auto text-[13px] bg-[var(--code-bg)]" style={{ overflowX: 'auto' }}>
+      <div className="dark flex-1 overflow-auto text-[13px] bg-[var(--code-bg)]" style={{ overflowX: 'auto' }}>
         <SyntaxHighlighter
           language="python"
           style={vscDarkPlus}

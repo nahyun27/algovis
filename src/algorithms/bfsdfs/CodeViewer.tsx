@@ -51,7 +51,7 @@ export default function CodeViewer({ codeLine, mode }: CodeViewerProps) {
   };
 
   return (
-    <div className="border rounded-xl bg-[var(--code-bg)] shadow-sm overflow-hidden flex flex-col flex-shrink-0 max-h-[540px]">
+    <div className="border rounded-xl bg-card shadow-sm overflow-hidden flex flex-col flex-shrink-0 max-h-[540px]">
       {/* Header */}
       <div className="p-3 border-b bg-muted/30 flex items-center justify-between gap-2">
         <h2 className="font-semibold tracking-tight text-sm truncate">
@@ -75,7 +75,7 @@ export default function CodeViewer({ codeLine, mode }: CodeViewerProps) {
       </div>
 
       {/* Code Area */}
-      <div className="flex-1 overflow-auto text-[13px] bg-[var(--code-bg)]" style={{ overflowX: 'auto' }}>
+      <div className="dark flex-1 overflow-auto text-[13px] bg-[var(--code-bg)]" style={{ overflowX: 'auto' }}>
         <SyntaxHighlighter
           language="python"
           style={vscDarkPlus}
