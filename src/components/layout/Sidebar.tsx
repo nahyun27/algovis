@@ -13,6 +13,7 @@ const links = [
   { name: 'BFS / DFS',      path: '/algorithm/bfsdfs',      icon: FileCode2 },
   { name: 'Bellman-Ford',   path: '/algorithm/bellmanford', icon: FileCode2 },
   { name: 'Floyd-Warshall', path: '/algorithm/floyd-warshall', icon: FileCode2 },
+  { name: 'Kruskal (MST)',    path: '/algorithm/kruskal',     icon: FileCode2 },
   { name: 'Topological Sort', path: '/algorithm/topological', icon: FileCode2 },
 ];
 

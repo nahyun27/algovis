@@ -72,6 +72,17 @@ import { generateFloydWarshallSteps, reconstructPath } from '../algorithms/floyd
 import { FW_N } from '../algorithms/floydwarshall/types';
 import type { FloydWarshallStep } from '../algorithms/floydwarshall/types';
 
+// Kruskal
+import KruskalGraphCanvas  from '../algorithms/kruskal/GraphCanvas';
+import KruskalCodeViewer   from '../algorithms/kruskal/CodeViewer';
+import KruskalProblemList  from '../algorithms/kruskal/ProblemList';
+import UnionFindDisplay    from '../algorithms/kruskal/UnionFindDisplay';
+import KruskalEdgeList     from '../algorithms/kruskal/EdgeList';
+import KruskalInfoModal    from '../algorithms/kruskal/InfoModal';
+import { generateKruskalSteps } from '../algorithms/kruskal/solver';
+import { KRUSKAL_N, KRUSKAL_NODES, KRUSKAL_EDGES } from '../algorithms/kruskal/types';
+import type { KruskalStep } from '../algorithms/kruskal/types';
+
 // Topological Sort
 import TopoGraphCanvas   from '../algorithms/topological/GraphCanvas';
 import TopoCodeViewer    from '../algorithms/topological/CodeViewer';
@@ -1276,6 +1287,136 @@ function TopologicalPage() {
   );
 }
 
+/* ─────────────── Kruskal Page ─────────────── */
+
+function KruskalPage() {
+  const [currentStepIdx, setCurrentStepIdx] = useState(0);
+  const [isPlaying, setIsPlaying]           = useState(false);
+  const [isModalOpen, setIsModalOpen]       = useState(false);
+
+  const steps = useMemo<KruskalStep[]>(
+    () => generateKruskalSteps(KRUSKAL_NODES, KRUSKAL_EDGES, KRUSKAL_N),
+    [],
+  );
+  const step = steps[currentStepIdx] ?? steps[0];
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    if (currentStepIdx >= steps.length - 1) {
+      const t = window.setTimeout(() => setIsPlaying(false), 0);
+      return () => clearTimeout(t);
+    }
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 800);
+    return () => clearTimeout(t);
+  }, [isPlaying, currentStepIdx, steps.length]);
+
+  const stepType = step.type as string;
+
+  const bannerClass =
+    stepType === 'REJECT'
+      ? 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-red-100 dark:border-red-900/50'
+      : stepType === 'ACCEPT'
+        ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200 border-emerald-100 dark:border-emerald-900/50'
+        : stepType === 'DONE'
+          ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-800 dark:text-teal-200 border-teal-100 dark:border-teal-900/50'
+          : 'bg-zinc-100 dark:bg-accent/50 text-zinc-700 dark:text-muted-foreground border-zinc-200 dark:border-accent';
+
+  return (
+    <div className="flex flex-col min-h-[calc(100vh-8rem)] lg:flex-row gap-6">
+      <div className="flex-1 min-w-[600px] border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
+
+        {/* Header */}
+        <div className="p-3 lg:p-4 border-b flex justify-between items-center bg-muted/30 flex-wrap gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            <h2 className="font-semibold text-base lg:text-lg tracking-tight">크루스칼 MST 시각화</h2>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors"
+            >크루스칼이란? 💡</button>
+          </div>
+          <div className={`text-xs font-bold px-3 py-1 rounded-full border ${
+            stepType === 'REJECT'   ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700' :
+            stepType === 'ACCEPT'   ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700' :
+            stepType === 'FIND'     ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' :
+            stepType === 'CONSIDER' ? 'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 border-sky-300 dark:border-sky-700' :
+            stepType === 'DONE'     ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-700' :
+            'bg-muted text-muted-foreground border-border'
+          }`}>{stepType}</div>
+        </div>
+
+        {/* Banner */}
+        <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>
+          {step.description}
+        </div>
+
+        {/* Main content: 상단 그래프+UnionFind / 하단 EdgeList+MST요약 */}
+        <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+          {/* Top: Graph (left) + UnionFind (right) */}
+          <div className="flex-1 flex flex-row divide-x divide-border overflow-hidden min-h-0">
+            <div className="flex-1 flex flex-col overflow-hidden">
+              <KruskalGraphCanvas step={step} nodes={KRUSKAL_NODES} edges={KRUSKAL_EDGES} />
+            </div>
+            <div className="w-[300px] shrink-0 overflow-hidden">
+              <UnionFindDisplay step={step} N={KRUSKAL_N} />
+            </div>
+          </div>
+
+          {/* Bottom: EdgeList (left) + MST Summary (right) */}
+          <div className="h-[200px] shrink-0 flex flex-row divide-x divide-border border-t overflow-hidden">
+            <div className="flex-1 overflow-hidden">
+              <KruskalEdgeList step={step} />
+            </div>
+            <div className="w-[220px] shrink-0 p-3 overflow-y-auto bg-card/30 flex flex-col gap-2">
+              <p className="text-xs font-semibold text-muted-foreground">MST 결과</p>
+              {step.mstEdges.length === 0 ? (
+                <p className="text-xs text-muted-foreground italic">아직 간선 없음...</p>
+              ) : (
+                <div className="flex flex-col gap-1">
+                  {step.mstEdges.map((e, i) => (
+                    <div key={i} className="flex items-center justify-between text-xs bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded px-2 py-1">
+                      <span className="font-mono font-semibold">{e.u} – {e.v}</span>
+                      <span className="font-bold text-emerald-700 dark:text-emerald-300">w={e.weight}</span>
+                    </div>
+                  ))}
+                  <div className="mt-1 pt-1 border-t flex justify-between text-xs font-bold">
+                    <span className="text-muted-foreground">총 비용</span>
+                    <span className="text-emerald-700 dark:text-emerald-300">{step.totalCost}</span>
+                  </div>
+                </div>
+              )}
+              {stepType === 'DONE' && (
+                <div className="mt-1 text-[10px] font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30 px-2 py-1 rounded-full text-center">
+                  ✓ MST 완성
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <StepController
+          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying}
+          onPlayPause={() => setIsPlaying(p => !p)}
+          onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
+          onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
+          onFirst={() => { setIsPlaying(false); setCurrentStepIdx(0); }}
+          onLast={() => { setIsPlaying(false); setCurrentStepIdx(steps.length - 1); }}
+        />
+      </div>
+
+      <RightPanel>
+        <KruskalCodeViewer codeLine={step.codeLine} />
+        <KruskalProblemList />
+      </RightPanel>
+
+      <KruskalInfoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); }}
+      />
+    </div>
+  );
+}
+
 /* ─────────────── Router ─────────────── */
 export default function AlgorithmPage() {
   const { slug } = useParams();
@@ -1286,6 +1427,7 @@ export default function AlgorithmPage() {
   if (slug === 'bellmanford')   return <BellmanFordPage />;
   if (slug === 'floyd-warshall') return <FloydWarshallPage />;
   if (slug === 'topological')   return <TopologicalPage />;
+  if (slug === 'kruskal')       return <KruskalPage />;
   return <div className="p-8 text-center text-muted-foreground">알고리즘을 찾을 수 없습니다.</div>;
 }
 

@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 type Paradigm    = "DP" | "Greedy" | "탐색";
-type ProblemType = "Shortest Path" | "Traversal" | "Optimization";
+type ProblemType = "Shortest Path" | "Traversal" | "Optimization" | "MST";
 
 interface AlgoCard {
   id: string;
@@ -92,6 +92,18 @@ const ALGORITHMS: AlgoCard[] = [
     spaceComplexity: "O(V²)",
   },
   {
+    id: "kruskal",
+    name: "Kruskal's Algorithm",
+    korName: "크루스칼 (MST)",
+    slug: "kruskal",
+    description: "간선을 가중치 오름차순으로 정렬 후 Union-Find로 사이클을 체크하며 최소 신장 트리(MST)를 구축합니다.",
+    difficulty: "Medium",
+    paradigm: "Greedy",
+    problemType: "MST",
+    timeComplexity: "O(E log E)",
+    spaceComplexity: "O(V)",
+  },
+  {
     id: "topological",
     name: "Topological Sort",
     korName: "위상정렬",
@@ -118,9 +130,10 @@ const paradigmTagStyles: Record<Paradigm, string> = {
 };
 
 const problemTypeTagStyles: Record<ProblemType, string> = {
-  "Shortest Path":      "bg-blue-50   text-blue-600   dark:bg-blue-900/20   dark:text-blue-400",
-  "Traversal": "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400",
-  "Optimization": "bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400",
+  "Shortest Path": "bg-blue-50   text-blue-600   dark:bg-blue-900/20   dark:text-blue-400",
+  "Traversal":     "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400",
+  "Optimization":  "bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400",
+  "MST":           "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400",
 };
 
 export default function Home() {
@@ -211,6 +224,7 @@ export default function Home() {
             <option value="Shortest Path">Shortest Path</option>
             <option value="Traversal">Traversal</option>
             <option value="Optimization">Optimization</option>
+            <option value="MST">MST</option>
           </select>
           <svg className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 9l6 6 6-6" />
