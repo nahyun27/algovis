@@ -72,6 +72,21 @@ import { generateFloydWarshallSteps, reconstructPath } from '../algorithms/floyd
 import { FW_N } from '../algorithms/floydwarshall/types';
 import type { FloydWarshallStep } from '../algorithms/floydwarshall/types';
 
+// Topological Sort
+import TopoGraphCanvas   from '../algorithms/topological/GraphCanvas';
+import TopoCodeViewer    from '../algorithms/topological/CodeViewer';
+import TopoProblemList   from '../algorithms/topological/ProblemList';
+import InDegreeDisplay   from '../algorithms/topological/InDegreeDisplay';
+import ResultOrder       from '../algorithms/topological/ResultOrder';
+import TopoInfoModal     from '../algorithms/topological/InfoModal';
+import { generateKahnSteps }    from '../algorithms/topological/solverKahn';
+import { generateDFSTopoSteps } from '../algorithms/topological/solverDFS';
+import {
+  TOPO_N, TOPO_NODES, TOPO_EDGES,
+  CYCLE_N, CYCLE_NODES, CYCLE_EDGES,
+} from '../algorithms/topological/types';
+import type { KahnStep, DFSTopoStep } from '../algorithms/topological/types';
+
 /* ─────────────── helpers ─────────────── */
 
 type PageMode = 'example' | 'editor';
@@ -1087,6 +1102,161 @@ function FloydWarshallPage() {
   );
 }
 
+/* ─────────────── Topological Sort Page ─────────────── */
+
+type TopoAlgoMode = 'Kahn' | 'DFS';
+type TopoExample  = 'dag'  | 'cycle';
+
+function TopologicalPage() {
+  const [algoMode, setAlgoMode]         = useState<TopoAlgoMode>('Kahn');
+  const [example, setExample]           = useState<TopoExample>('dag');
+  const [currentStepIdx, setCurrentStepIdx] = useState(0);
+  const [isPlaying, setIsPlaying]       = useState(false);
+  const [isModalOpen, setIsModalOpen]   = useState(false);
+
+  const { nodes, edges, N } = example === 'dag'
+    ? { nodes: TOPO_NODES,  edges: TOPO_EDGES,  N: TOPO_N  }
+    : { nodes: CYCLE_NODES, edges: CYCLE_EDGES, N: CYCLE_N };
+
+  const steps = useMemo<(KahnStep | DFSTopoStep)[]>(() => {
+    return algoMode === 'Kahn'
+      ? generateKahnSteps(nodes, edges, N)
+      : generateDFSTopoSteps(nodes, edges, N);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [algoMode, example]);
+
+  const step = (steps[currentStepIdx] ?? steps[0]) as KahnStep & DFSTopoStep;
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    if (currentStepIdx >= steps.length - 1) {
+      const t = window.setTimeout(() => setIsPlaying(false), 0);
+      return () => clearTimeout(t);
+    }
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 700);
+    return () => clearTimeout(t);
+  }, [isPlaying, currentStepIdx, steps.length]);
+
+  const handleAlgoChange = (mode: TopoAlgoMode) => {
+    setAlgoMode(mode);
+    setCurrentStepIdx(0);
+    setIsPlaying(false);
+  };
+
+  const handleExampleChange = (ex: TopoExample) => {
+    setExample(ex);
+    setCurrentStepIdx(0);
+    setIsPlaying(false);
+  };
+
+  const stepType = step.type as string;
+  const bannerClass =
+    step.hasCycle
+      ? 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-red-100 dark:border-red-900/50'
+      : stepType === 'DONE'
+        ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200 border-emerald-100 dark:border-emerald-900/50'
+        : stepType === 'DEQUEUE' || stepType === 'VISIT'
+          ? 'bg-blue-50 dark:bg-blue-900/10 text-blue-800 dark:text-blue-300 border-blue-100 dark:border-blue-900/30'
+          : 'bg-zinc-100 dark:bg-accent/50 text-zinc-700 dark:text-muted-foreground border-zinc-200 dark:border-accent';
+
+  return (
+    <div className="flex flex-col min-h-[calc(100vh-8rem)] lg:flex-row gap-6">
+      <div className="flex-1 min-w-[600px] flex flex-col bg-card border rounded-xl shadow-sm overflow-hidden min-h-[650px] lg:h-[calc(100vh-140px)]">
+
+        {/* Algorithm Tabs */}
+        <div className="flex border-b bg-muted/20 px-4 py-2 gap-4">
+          <button
+            onClick={() => handleAlgoChange('Kahn')}
+            className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${algoMode === 'Kahn' ? 'bg-white dark:bg-zinc-800 shadow-sm text-violet-600 dark:text-violet-400' : 'text-muted-foreground hover:bg-white/50 dark:hover:bg-zinc-800/50'}`}
+          >
+            칸의 알고리즘 (Kahn)
+          </button>
+          <button
+            onClick={() => handleAlgoChange('DFS')}
+            className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${algoMode === 'DFS' ? 'bg-white dark:bg-zinc-800 shadow-sm text-indigo-600 dark:text-indigo-400' : 'text-muted-foreground hover:bg-white/50 dark:hover:bg-zinc-800/50'}`}
+          >
+            DFS 방식
+          </button>
+        </div>
+
+        {/* Header */}
+        <div className="p-3 lg:p-4 border-b flex justify-between items-center bg-muted/30 flex-wrap gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            <h2 className="font-semibold text-base lg:text-lg tracking-tight">
+              위상정렬 시각화 — {algoMode === 'Kahn' ? '칸의 알고리즘' : 'DFS 방식'}
+            </h2>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-violet-300 dark:border-violet-700 text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/30 hover:bg-violet-100 dark:hover:bg-violet-900/50 transition-colors"
+            >위상정렬이란? 💡</button>
+            {/* Example tabs */}
+            <div className="flex gap-1 bg-muted/40 rounded-lg p-1">
+              {(['dag', 'cycle'] as TopoExample[]).map(ex => (
+                <button
+                  key={ex}
+                  onClick={() => handleExampleChange(ex)}
+                  className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${
+                    example === ex
+                      ? 'bg-white dark:bg-accent shadow-sm text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >{ex === 'dag' ? '수강신청 예제 (DAG)' : '사이클 예제'}</button>
+              ))}
+            </div>
+          </div>
+          <div className={`text-xs font-bold px-3 py-1 rounded-full border ${
+            stepType === 'CYCLE_DETECTED' ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700' :
+            stepType === 'DONE'    ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700' :
+            stepType === 'DEQUEUE' || stepType === 'VISIT' ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' :
+            stepType === 'DECREASE' || stepType === 'FINISH' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700' :
+            'bg-muted text-muted-foreground border-border'
+          }`}>{stepType}</div>
+        </div>
+
+        {/* Banner */}
+        <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>
+          {step.description}
+        </div>
+
+        {/* Main content */}
+        <div className="flex-1 flex flex-col bg-muted/5 divide-y divide-border overflow-hidden min-h-0 relative">
+          <div className="w-full flex-1 flex flex-col relative overflow-hidden border-b">
+            <TopoGraphCanvas step={step} mode={algoMode} nodes={nodes} edges={edges} />
+          </div>
+          <div className="w-full p-3 xl:p-4 overflow-auto">
+            {algoMode === 'Kahn' ? (
+              <InDegreeDisplay step={step as KahnStep} nodes={nodes} />
+            ) : (
+              <ResultOrder step={step} mode={algoMode} nodes={nodes} />
+            )}
+          </div>
+        </div>
+
+        <StepController
+          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying}
+          onPlayPause={() => setIsPlaying(p => !p)}
+          onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
+          onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
+          onFirst={() => { setIsPlaying(false); setCurrentStepIdx(0); }}
+          onLast={() => { setIsPlaying(false); setCurrentStepIdx(steps.length - 1); }}
+        />
+      </div>
+
+      <RightPanel>
+        <TopoCodeViewer codeLine={step.codeLine} mode={algoMode} />
+        {algoMode === 'Kahn' && <ResultOrder step={step} mode={algoMode} nodes={nodes} />}
+        <TopoProblemList />
+      </RightPanel>
+
+      <TopoInfoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); }}
+      />
+    </div>
+  );
+}
+
 /* ─────────────── Router ─────────────── */
 export default function AlgorithmPage() {
   const { slug } = useParams();
@@ -1096,6 +1266,7 @@ export default function AlgorithmPage() {
   if (slug === 'bfsdfs')        return <BFSDFSPage />;
   if (slug === 'bellmanford')   return <BellmanFordPage />;
   if (slug === 'floyd-warshall') return <FloydWarshallPage />;
+  if (slug === 'topological')   return <TopologicalPage />;
   return <div className="p-8 text-center text-muted-foreground">알고리즘을 찾을 수 없습니다.</div>;
 }
 

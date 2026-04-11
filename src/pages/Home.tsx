@@ -91,6 +91,18 @@ const ALGORITHMS: AlgoCard[] = [
     timeComplexity: "O(V³)",
     spaceComplexity: "O(V²)",
   },
+  {
+    id: "topological",
+    name: "Topological Sort",
+    korName: "위상정렬",
+    slug: "topological",
+    description: "DAG에서 선행 관계를 만족하는 노드 순서를 결정합니다. 칸의 알고리즘(BFS)과 DFS 방식 두 가지를 비교합니다.",
+    difficulty: "Medium",
+    paradigm: "탐색",
+    problemType: "Traversal",
+    timeComplexity: "O(V + E)",
+    spaceComplexity: "O(V + E)",
+  },
 ];
 
 const difficultyStyles = {
