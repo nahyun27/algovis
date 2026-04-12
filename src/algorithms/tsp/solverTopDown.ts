@@ -19,10 +19,11 @@ export function generateTSPStepsTopDown(
     if (mask === (1 << N) - 1) {
       const w = W[curr][0] || INF;
       const returnVal = w === 0 ? INF : w;
+      dp[mask][curr] = returnVal;
       steps.push({
         mask, currentCity: curr, nextCity: 0, edgeWeight: w, dpTable: cloneDP(),
         activeEdge: [curr, 0], description: `모든 도시 방문 완료. 시작 도시(0)로 귀환 가중치: ${w}`,
-        isImprovement: false, codeLine: 3
+        isImprovement: returnVal !== INF, codeLine: 3
       });
       return returnVal;
     }
