@@ -230,20 +230,106 @@ export default function Home() {
     <div className="space-y-6 sm:space-y-10">
       {/* ── Hero ── */}
       <section className="rounded-xl sm:rounded-2xl bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 p-5 sm:p-8 md:p-12 text-white shadow-xl relative overflow-hidden">
-        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full bg-white/10 blur-2xl pointer-events-none" />
+        {/* Keyframes */}
+        <style>{`
+          @keyframes hero-drift1 { 0%,100%{ transform:translate(0,0) scale(1) } 50%{ transform:translate(30px,-20px) scale(1.08) } }
+          @keyframes hero-drift2 { 0%,100%{ transform:translate(0,0) scale(1) } 50%{ transform:translate(-20px,25px) scale(1.05) } }
+          @keyframes hero-drift3 { 0%,100%{ transform:translate(0,0) } 50%{ transform:translate(15px,15px) } }
+          @keyframes hero-float  { 0%,100%{ transform:translateY(0) rotate(0deg) } 50%{ transform:translateY(-12px) rotate(8deg) } }
+          @keyframes hero-float2 { 0%,100%{ transform:translateY(0) rotate(45deg) } 50%{ transform:translateY(-8px) rotate(53deg) } }
+          @keyframes hero-pulse-ring { 0%,100%{ opacity:.15; r:18 } 50%{ opacity:.25; r:22 } }
+          @keyframes hero-edge-flow { 0%{ stroke-dashoffset:20 } 100%{ stroke-dashoffset:0 } }
+        `}</style>
+
+        {/* Animated gradient orbs */}
+        <div
+          className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-gradient-to-br from-pink-500/20 to-violet-400/20 blur-3xl pointer-events-none"
+          style={{ animation: 'hero-drift1 8s ease-in-out infinite' }}
+        />
+        <div
+          className="absolute top-1/2 -left-16 w-56 h-56 rounded-full bg-gradient-to-br from-cyan-400/15 to-blue-500/15 blur-3xl pointer-events-none"
+          style={{ animation: 'hero-drift2 12s ease-in-out infinite' }}
+        />
+        <div
+          className="absolute -bottom-16 right-1/3 w-48 h-48 rounded-full bg-gradient-to-br from-amber-400/10 to-orange-500/10 blur-2xl pointer-events-none"
+          style={{ animation: 'hero-drift3 10s ease-in-out infinite' }}
+        />
+
+        {/* Dot grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.06] pointer-events-none"
+          style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '28px 28px' }}
+        />
+
+        {/* Floating geometric shapes */}
+        <div
+          className="absolute top-6 right-[15%] w-6 h-6 sm:w-8 sm:h-8 border border-white/15 rounded-sm pointer-events-none"
+          style={{ animation: 'hero-float2 7s ease-in-out infinite' }}
+        />
+        <div
+          className="absolute bottom-8 left-[22%] w-3 h-3 sm:w-4 sm:h-4 bg-white/10 rounded-full pointer-events-none"
+          style={{ animation: 'hero-float 5s ease-in-out infinite' }}
+        />
+        <div
+          className="absolute top-[40%] right-[8%] w-4 h-4 sm:w-5 sm:h-5 border border-white/10 rounded-full pointer-events-none"
+          style={{ animation: 'hero-float 9s ease-in-out infinite' }}
+        />
+        <div
+          className="absolute bottom-[35%] left-[10%] w-2 h-2 bg-white/15 rounded-full pointer-events-none"
+          style={{ animation: 'hero-drift3 6s ease-in-out infinite' }}
+        />
+
+        {/* Animated tree graph illustration */}
+        <svg
+          viewBox="0 0 320 280"
+          fill="none"
+          className="absolute right-0 sm:right-4 bottom-0 w-[200px] sm:w-[280px] md:w-[320px] opacity-[0.10] pointer-events-none select-none"
+          aria-hidden="true"
+        >
+          {/* Animated edges (flowing dashes) */}
+          <line x1="148" y1="46" x2="92" y2="96" stroke="white" strokeWidth="2" strokeLinecap="round" strokeDasharray="5 5" style={{ animation: 'hero-edge-flow 3s linear infinite' }} />
+          <line x1="172" y1="46" x2="228" y2="96" stroke="white" strokeWidth="2" strokeLinecap="round" strokeDasharray="5 5" style={{ animation: 'hero-edge-flow 3.5s linear infinite' }} />
+          <line x1="68" y1="122" x2="48" y2="178" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="4 4" style={{ animation: 'hero-edge-flow 4s linear infinite' }} />
+          <line x1="92" y1="122" x2="112" y2="178" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="4 4" style={{ animation: 'hero-edge-flow 3.2s linear infinite' }} />
+          <line x1="228" y1="122" x2="208" y2="178" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="4 4" style={{ animation: 'hero-edge-flow 3.8s linear infinite' }} />
+          <line x1="252" y1="122" x2="272" y2="178" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="4 4" style={{ animation: 'hero-edge-flow 4.2s linear infinite' }} />
+          <line x1="34" y1="202" x2="24" y2="248" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="3 3" style={{ animation: 'hero-edge-flow 3.6s linear infinite' }} />
+          <line x1="48" y1="202" x2="56" y2="248" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="3 3" style={{ animation: 'hero-edge-flow 4.5s linear infinite' }} />
+          <line x1="200" y1="202" x2="164" y2="248" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="3 3" style={{ animation: 'hero-edge-flow 3.4s linear infinite' }} />
+          <line x1="120" y1="200" x2="200" y2="184" stroke="white" strokeWidth="1" strokeDasharray="4 6" opacity="0.5" style={{ animation: 'hero-edge-flow 5s linear infinite' }} />
+          {/* Pulsing nodes */}
+          <circle cx="160" cy="32" r="18" stroke="white" strokeWidth="2.5" fill="white" fillOpacity="0.08">
+            <animate attributeName="r" values="18;21;18" dur="4s" repeatCount="indefinite" />
+            <animate attributeName="fill-opacity" values="0.08;0.15;0.08" dur="4s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="80" cy="110" r="16" stroke="white" strokeWidth="2" fill="white" fillOpacity="0.05">
+            <animate attributeName="r" values="16;18;16" dur="5s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="240" cy="110" r="16" stroke="white" strokeWidth="2" fill="white" fillOpacity="0.05">
+            <animate attributeName="r" values="16;18;16" dur="4.5s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="40" cy="190" r="14" stroke="white" strokeWidth="1.5" fill="white" fillOpacity="0.04" />
+          <circle cx="120" cy="190" r="14" stroke="white" strokeWidth="1.5" fill="white" fillOpacity="0.04" />
+          <circle cx="200" cy="190" r="14" stroke="white" strokeWidth="1.5" fill="white" fillOpacity="0.04" />
+          <circle cx="280" cy="190" r="14" stroke="white" strokeWidth="1.5" fill="white" fillOpacity="0.04" />
+          <circle cx="20" cy="256" r="10" stroke="white" strokeWidth="1.2" />
+          <circle cx="60" cy="256" r="10" stroke="white" strokeWidth="1.2" />
+          <circle cx="160" cy="256" r="10" stroke="white" strokeWidth="1.2" />
+        </svg>
+
+        {/* Content */}
         <div className="relative z-10">
-          <span className="inline-block mb-2 sm:mb-4 text-[10px] sm:text-xs font-semibold tracking-widest uppercase bg-white/20 rounded-full px-2.5 sm:px-3 py-0.5 sm:py-1">
+          <span className="inline-block mb-2 sm:mb-4 text-[10px] sm:text-xs font-semibold tracking-widest uppercase bg-white/15 backdrop-blur-sm border border-white/20 rounded-full px-2.5 sm:px-3 py-0.5 sm:py-1">
             Algorithm Visualizer
           </span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">AlgoTrace</h1>
-          <p className="mt-2 sm:mt-3 text-sm sm:text-lg md:text-xl text-white/80 max-w-xl leading-relaxed">
+          <p className="mt-2 sm:mt-3 text-sm sm:text-lg md:text-xl text-white/80 max-w-lg leading-relaxed">
             복잡한 알고리즘을 한 단계씩 눈으로 이해하는 인터랙티브 시각화 플랫폼
           </p>
-          <div className="mt-3 sm:mt-5 flex gap-x-3 gap-y-1 flex-wrap text-[11px] sm:text-sm font-medium text-white/70">
-            <span>✦ 단계별 재생 제어</span>
-            <span>✦ Top-down / Bottom-up 비교</span>
-            <span>✦ 실시간 DP 테이블</span>
+          <div className="mt-3 sm:mt-5 flex gap-x-4 gap-y-1.5 flex-wrap text-[11px] sm:text-sm font-medium">
+            <span className="flex items-center gap-1.5 text-white/80"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />단계별 재생 제어</span>
+            <span className="flex items-center gap-1.5 text-white/80"><span className="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block" />실시간 시각화</span>
+            <span className="flex items-center gap-1.5 text-white/80"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />직관적 이해</span>
           </div>
         </div>
       </section>

@@ -1260,8 +1260,9 @@ function TopologicalPage() {
               <div className="w-full flex-1 flex flex-col relative overflow-hidden border-b">
                 <TopoGraphCanvas step={step} mode={algoMode} nodes={nodes} edges={edges} />
               </div>
-              <div className="w-full p-3 xl:p-4 overflow-auto">
+              <div className="w-full p-3 xl:p-4 overflow-auto space-y-3">
                 <InDegreeDisplay step={step as KahnStep} nodes={nodes} />
+                <ResultOrder step={step} mode={algoMode} nodes={nodes} />
               </div>
             </>
           ) : (
@@ -1313,7 +1314,6 @@ function TopologicalPage() {
 
       <RightPanel>
         <TopoCodeViewer codeLine={step.codeLine} mode={algoMode} />
-        <ResultOrder step={step} mode={algoMode} nodes={nodes} />
         <TopoProblemList />
       </RightPanel>
 
