@@ -227,7 +227,7 @@ export default function Home() {
   }, [query, paradigm, problemType]);
 
   return (
-    <div className="space-y-6 sm:space-y-10">
+    <div className="space-y-4 sm:space-y-6">
       {/* ── Hero ── */}
       <section className="rounded-xl sm:rounded-2xl bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 p-5 sm:p-8 md:p-12 text-white shadow-xl relative overflow-hidden">
         {/* Keyframes */}
