@@ -1658,7 +1658,7 @@ function KruskalPage() {
 import SortingArrayCanvas from '../algorithms/sorting/ArrayCanvas';
 import SortingCodeViewer  from '../algorithms/sorting/CodeViewer';
 import SortingProblemList from '../algorithms/sorting/ProblemList';
-import SortingInfoModal   from '../algorithms/sorting/InfoModal';
+import { SortAlgoModal, SortCompareModal } from '../algorithms/sorting/InfoModal';
 import { DEFAULT_ARRAY, SORT_LABELS } from '../algorithms/sorting/types';
 import type { SortStep, SortAlgorithm } from '../algorithms/sorting/types';
 import { generateBubbleSortSteps }     from '../algorithms/sorting/bubbleSort';
@@ -1684,7 +1684,8 @@ function SortingPage() {
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAlgoModalOpen, setAlgoModalOpen] = useState(false);
+  const [isCompareModalOpen, setCompareModalOpen] = useState(false);
   const [inputArray, setInputArray] = useState<number[]>(DEFAULT_ARRAY);
   const [inputText, setInputText] = useState('');
 
@@ -1755,8 +1756,8 @@ function SortingPage() {
     <div className="flex flex-col min-h-[calc(100vh-8rem)] lg:flex-row gap-6 pb-16">
       <div className="flex-1 w-full lg:min-w-[600px] border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
 
-        {/* ── Tabs ── */}
-        <div className="flex border-b bg-muted/20 px-2 sm:px-4 py-2 gap-1 sm:gap-2 overflow-x-auto">
+        {/* ── Tabs + Compare button ── */}
+        <div className="flex border-b bg-muted/20 px-2 sm:px-4 py-2 gap-1 sm:gap-2 overflow-x-auto items-center">
           {SORT_TABS.map(algo => (
             <button
               key={algo}
@@ -1770,6 +1771,11 @@ function SortingPage() {
               {SORT_LABELS[algo].kor}
             </button>
           ))}
+          <div className="flex-1" />
+          <button
+            onClick={() => setCompareModalOpen(true)}
+            className="px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors whitespace-nowrap shrink-0"
+          >정렬 비교</button>
         </div>
 
         {/* ── Header ── */}
@@ -1777,9 +1783,9 @@ function SortingPage() {
           <div className="flex items-center gap-3 flex-wrap">
             <h2 className="font-semibold text-base lg:text-lg tracking-tight">{label.kor} 시각화</h2>
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setAlgoModalOpen(true)}
               className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-rose-300 dark:border-rose-700 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors"
-            >정렬이란? 💡</button>
+            >{label.kor}이란? 💡</button>
           </div>
           <div className="flex items-center gap-2 text-xs">
             <span className="font-mono bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800">
@@ -1833,10 +1839,15 @@ function SortingPage() {
         <SortingProblemList />
       </RightPanel>
 
-      <SortingInfoModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+      <SortAlgoModal
+        isOpen={isAlgoModalOpen}
+        onClose={() => setAlgoModalOpen(false)}
         onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); }}
+        algorithm={algorithm}
+      />
+      <SortCompareModal
+        isOpen={isCompareModalOpen}
+        onClose={() => setCompareModalOpen(false)}
       />
     </div>
   );

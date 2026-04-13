@@ -16,6 +16,7 @@ interface AlgoCard {
   timeComplexity: string;
   spaceComplexity: string;
   comingSoon?: boolean;
+  keywords?: string[];
 }
 
 const ALGORITHMS: AlgoCard[] = [
@@ -126,6 +127,7 @@ const ALGORITHMS: AlgoCard[] = [
     problemType: "Sorting",
     timeComplexity: "O(n²) ~ O(n log n)",
     spaceComplexity: "O(1) ~ O(n)",
+    keywords: ['버블', '선택', '삽입', '병합', '퀵', '힙', 'bubble', 'selection', 'insertion', 'merge', 'quick', 'heap', 'sort'],
   },
 ];
 
@@ -242,7 +244,7 @@ export default function Home() {
   const filtered = useMemo(() => {
     const q = query.toLowerCase();
     return ALGORITHMS.filter(a => {
-      const matchQ        = a.name.toLowerCase().includes(q) || a.korName.toLowerCase().includes(q);
+      const matchQ        = a.name.toLowerCase().includes(q) || a.korName.toLowerCase().includes(q) || (a.keywords?.some(k => k.toLowerCase().includes(q)) ?? false);
       const matchParadigm = paradigm === ""     || a.paradigm === paradigm;
       const matchType     = problemType === ""  || a.problemType === problemType;
       return matchQ && matchParadigm && matchType;
