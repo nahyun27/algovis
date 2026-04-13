@@ -24,6 +24,15 @@
     <meta name="twitter:image" content="https://algorithm-trace.vercel.app/og-image.png" />
   </head>
   <body>
+    <script>
+      // Sync dark mode before first paint to prevent flash
+      (function(){
+        var t = localStorage.getItem('theme');
+        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

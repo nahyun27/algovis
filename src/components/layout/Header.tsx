@@ -13,8 +13,10 @@ export default function Header() {
   );
 
   const toggleDark = () => {
-    document.documentElement.classList.toggle('dark');
-    setIsDark(d => !d);
+    const next = !isDark;
+    document.documentElement.classList.toggle('dark', next);
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+    setIsDark(next);
   };
 
   return (

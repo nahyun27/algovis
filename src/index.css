@@ -31,6 +31,11 @@
     --muted-foreground: #71717a;
     --card: #ffffff;
     --card-foreground: #09090b;
+    --hint: #a1a1aa;
+    --accent: #f4f4f5;
+    --code-bg: #1e1e2e;
+    --code-highlight: #2d2d44;
+    --popover: #ffffff;
   }
   
   .dark {
@@ -49,6 +54,7 @@
     --accent: #383b52;
     --code-bg: #13151f;
     --code-highlight: #1e2235;
+    --popover: #1a1d27;
   }
 
   body {
