@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, ArrowRight, Clock, Box, Zap, Activity } from 'lucide-react';
+import { Search, Filter, ArrowRight, Clock, Box, Zap, Activity, BarChart3, Waypoints, Network, Route, Share2 } from 'lucide-react';
 
 type Paradigm    = "DP" | "Greedy" | "exploration";
 type ProblemType = "Shortest Path" | "Traversal" | "Optimization" | "MST" | "Sorting";
@@ -48,9 +48,11 @@ const diffBadge: Record<string, string> = {
 function AlgoIcon({ id }: { id: string }) {
   const cls = "w-5 h-5";
   switch (id) {
-    case "tsp": return <Box className={cls} />;
-    case "dijkstra": case "astar": case "bellmanford": case "floydwarshall": return <Zap className={cls} />;
-    case "bfsdfs": case "topological": return <Search className={cls} />;
+    case "tsp": return <Route className={cls} />;
+    case "dijkstra": case "astar": case "bellmanford": case "floydwarshall": return <Waypoints className={cls} />;
+    case "bfsdfs": case "topological": return <Network className={cls} />;
+    case "kruskal": return <Share2 className={cls} />;
+    case "sorting": return <BarChart3 className={cls} />;
     default: return <Activity className={cls} />;
   }
 }
@@ -85,7 +87,7 @@ export default function Home() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-12 pb-20 px-4 sm:px-6 md:px-8">
+    <div className="max-w-6xl mx-auto space-y-3 md:space-y-6 pb-20 px-4 sm:px-6 md:px-8">
       
       {/* Hero Section */}
       <section className="relative pt-6 pb-4 overflow-hidden">
@@ -141,26 +143,26 @@ export default function Home() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="sticky top-6 z-30"
       >
-        <div className="glass p-2 rounded-2xl shadow-xl border-border/50 flex flex-col md:flex-row gap-2">
+        <div className="bg-card/80 backdrop-blur-md p-1.5 md:p-2 rounded-xl md:rounded-2xl shadow-md border border-border/40 flex flex-col md:flex-row gap-1.5 md:gap-2">
           {/* Search Input */}
           <div className="relative flex-1 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors" />
+            <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors" />
             <input
               type="text"
-              placeholder="Search by name, category, or complexity..."
+              placeholder="Search by name, category..."
               value={query}
               onChange={e => setQuery(e.target.value)}
-              className="w-full h-12 pl-11 pr-4 rounded-xl bg-background/50 border-none text-sm placeholder:text-muted-foreground/50 focus:ring-2 focus:ring-primary/20 transition-all font-medium"
+              className="w-full h-10 md:h-12 pl-9 md:pl-11 pr-4 rounded-lg md:rounded-xl bg-background/50 border-none text-xs md:text-sm placeholder:text-muted-foreground/50 focus:ring-2 focus:ring-primary/20 transition-all font-medium"
             />
           </div>
 
           <div className="h-px md:h-8 md:w-px bg-border/60 self-center mx-1" />
 
           {/* Type Filter */}
-          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar px-2 py-1">
-            <div className="flex items-center gap-1.5 mr-2">
-              <Filter className="w-3.5 h-3.5 text-muted-foreground/40" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 whitespace-nowrap">Filter</span>
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar px-1.5 py-1">
+            <div className="flex items-center gap-1.5 mr-1 md:mr-2">
+              <Filter className="w-3.5 h-3.5 text-muted-foreground/40 hidden md:block" />
+              <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 whitespace-nowrap hidden md:inline">Filter</span>
             </div>
             
             {(['Shortest Path', 'Traversal', 'MST', 'Sorting', 'Optimization'] as const).map(label => {
@@ -169,7 +171,7 @@ export default function Home() {
                 <button 
                   key={label} 
                   onClick={() => setProblemType(active ? '' : label as ProblemType)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                  className={`px-2.5 py-1.5 md:px-3 md:py-1.5 rounded-md md:rounded-lg text-[10px] md:text-xs font-bold transition-all whitespace-nowrap ${
                     active 
                       ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20' 
                       : 'hover:bg-muted text-muted-foreground/70 active:scale-95'
@@ -183,7 +185,7 @@ export default function Home() {
             {hasActiveFilters && (
               <button 
                 onClick={resetFilters}
-                className="ml-2 px-3 py-1.5 rounded-lg text-xs font-bold text-rose-500 hover:bg-rose-500/10 transition-colors"
+                className="ml-1 md:ml-2 px-2.5 py-1.5 rounded-md md:rounded-lg text-[10px] md:text-xs font-bold text-rose-500 hover:bg-rose-500/10 transition-colors"
               >
                 Clear
               </button>
@@ -197,7 +199,7 @@ export default function Home() {
         variants={container}
         initial="hidden"
         animate="show"
-        className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        className="grid gap-3 sm:gap-4 lg:gap-5 sm:grid-cols-2 lg:grid-cols-3"
       >
         <AnimatePresence mode="popLayout">
           {filtered.map(algo => (
@@ -212,38 +214,42 @@ export default function Home() {
             >
               <Link 
                 to={algo.comingSoon ? "#" : `/algorithm/${algo.slug}`}
-                className={`flex flex-col h-full rounded-2xl border bg-card/50 backdrop-blur-sm p-6 transition-all duration-300 ${
+                className={`flex flex-col h-full rounded-xl md:rounded-2xl border border-border/40 bg-card/80 shadow-md shadow-black/5 dark:shadow-black/20 backdrop-blur-md p-3.5 md:p-5 transition-all duration-300 ${
                   algo.comingSoon 
                     ? 'opacity-50 cursor-not-allowed' 
-                    : 'hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1'
+                    : 'hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5'
                 }`}
               >
-                {/* Badge Row */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${paradigmColors[algo.paradigm]} flex items-center justify-center text-white shadow-lg`}>
-                    <AlgoIcon id={algo.id} />
+                {/* Header: Icon + Title + Difficulty */}
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2.5 md:gap-3">
+                    <div className={`shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-lg bg-gradient-to-br ${paradigmColors[algo.paradigm]} flex items-center justify-center text-white shadow-sm`}>
+                      <AlgoIcon id={algo.id} />
+                    </div>
+                    <div>
+                      <h3 className="text-sm md:text-base font-bold tracking-tight group-hover:text-primary transition-colors leading-tight">
+                        {algo.name}
+                      </h3>
+                      <p className="text-[9px] md:text-[10px] font-bold text-muted-foreground opacity-60 mt-0.5">
+                        {algo.korName}
+                      </p>
+                    </div>
                   </div>
-                  <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border ${diffBadge[algo.difficulty]}`}>
+                  <span className={`shrink-0 ml-2 px-1.5 py-0.5 md:px-2 md:py-0.5 rounded-md text-[8px] md:text-[9px] font-black uppercase tracking-wider border ${diffBadge[algo.difficulty]}`}>
                     {algo.difficulty}
                   </span>
                 </div>
 
                 {/* Content */}
-                <div className="space-y-2 flex-grow">
-                  <h3 className="text-xl font-bold tracking-tight group-hover:text-primary transition-colors">
-                    {algo.name}
-                  </h3>
-                  <p className="text-xs font-bold text-muted-foreground opacity-60">
-                    {algo.korName}
-                  </p>
-                  <p className="text-sm text-foreground/70 leading-relaxed font-medium pt-2">
+                <div className="flex-grow">
+                  <p className="text-[11px] md:text-xs text-foreground/70 leading-relaxed font-medium">
                     {algo.description}
                   </p>
                 </div>
 
                 {/* Footer */}
-                <div className="mt-8 pt-6 border-t border-border/60 flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-[11px] font-bold text-muted-foreground/60">
+                <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-border/60 flex items-center justify-between">
+                  <div className="flex items-center gap-3 text-[10px] md:text-[11px] font-bold text-muted-foreground/60">
                     <div className="flex items-center gap-1.5">
                       <Clock className="w-3 h-3" />
                       {algo.timeComplexity}
@@ -251,8 +257,8 @@ export default function Home() {
                   </div>
                   
                   {!algo.comingSoon && (
-                    <div className="p-2 rounded-lg bg-muted group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                      <ArrowRight className="w-4 h-4 translate-x-0 group-hover:translate-x-0.5 transition-transform" />
+                    <div className="p-1 md:p-1.5 rounded-md bg-muted group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                      <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 translate-x-0 group-hover:translate-x-0.5 transition-transform" />
                     </div>
                   )}
                 </div>

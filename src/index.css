@@ -29,9 +29,9 @@
 
 @layer base {
   :root {
-    --background: #ffffff;
-    --foreground: #09090b;
-    --border: #e4e4e7;
+    --background: #f1f5f9;
+    --foreground: #0f172a;
+    --border: #e2e8f0;
     --primary: #4f46e5;
     --primary-foreground: #ffffff;
     --muted: #f4f4f5;
@@ -49,9 +49,9 @@
   }
   
   .dark {
-    --background: #09090b;
-    --foreground: #fafafa;
-    --border: #27272a;
+    --background: #0b1120;
+    --foreground: #f8fafc;
+    --border: #1e293b;
     --primary: #6366f1;
     --primary-foreground: #ffffff;
     --muted: #18181b;

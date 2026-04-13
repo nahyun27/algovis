@@ -75,7 +75,7 @@ export default function Sidebar({ onClose }: Props) {
   const categoryContainsActive = (cat: Category) => cat.items.some(item => isActive(item.path));
 
   return (
-    <div className="py-8 px-4 h-full flex flex-col gap-6 select-none bg-background/50 backdrop-blur-sm">
+    <div className="py-8 px-4 h-full flex flex-col gap-6 select-none bg-card">
       
       {/* Brand Identity */}
       <div className="px-2 mb-2">
@@ -172,28 +172,7 @@ export default function Sidebar({ onClose }: Props) {
       </div>
 
       {/* Footer Tools */}
-      <div className="mt-auto space-y-4 pt-6 border-t border-border/40">
-        <AnimatePresence>
-          {isAlgorithmPage && (
-            <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setCodeDrawerOpen(!codeDrawerOpen)}
-              className={`flex w-full items-center justify-center gap-2 text-xs font-bold py-3 rounded-xl transition-all shadow-sm ${
-                codeDrawerOpen
-                  ? 'bg-primary text-primary-foreground'
-                  : 'glass hover:bg-muted text-foreground'
-              }`}
-            >
-              <Code2 className="h-4 w-4" />
-              Toggle Code Viewer
-            </motion.button>
-          )}
-        </AnimatePresence>
-
+      <div className="mt-auto space-y-4 pt-6 border-t border-border/40 pb-20 lg:pb-28">
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
             <a
