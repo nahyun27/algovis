@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 type Paradigm    = "DP" | "Greedy" | "exploration";
-type ProblemType = "Shortest Path" | "Traversal" | "Optimization" | "MST";
+type ProblemType = "Shortest Path" | "Traversal" | "Optimization" | "MST" | "Sorting";
 
 interface AlgoCard {
   id: string;
@@ -115,6 +115,18 @@ const ALGORITHMS: AlgoCard[] = [
     timeComplexity: "O(V + E)",
     spaceComplexity: "O(V + E)",
   },
+  {
+    id: "sorting",
+    name: "Sorting Algorithms",
+    korName: "정렬 알고리즘",
+    slug: "sorting",
+    description: "버블·선택·삽입·병합·퀵·힙 6가지 정렬을 막대 그래프로 비교하며 시각화합니다.",
+    difficulty: "Easy",
+    paradigm: "exploration",
+    problemType: "Sorting",
+    timeComplexity: "O(n²) ~ O(n log n)",
+    spaceComplexity: "O(1) ~ O(n)",
+  },
 ];
 
 const difficultyStyles = {
@@ -134,6 +146,7 @@ const problemTypeTagStyles: Record<ProblemType, string> = {
   "Traversal":     "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400",
   "Optimization":  "bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400",
   "MST":           "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400",
+  "Sorting":       "bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400",
 };
 
 // ── Per-algorithm mini symbols ──────────────────────────────────────────────
@@ -190,6 +203,16 @@ function AlgoIcon({ id }: { id: string }) {
           <path d="M9 10h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           <path d="M7 13l2 8M25 13l-3 8M13 24h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           <path d="M15 4L8 9M17 4L24 9" stroke="currentColor" strokeWidth="1.5" opacity=".4" strokeDasharray="2 2"/>
+        </svg>
+      );
+    case "sorting":
+      return (
+        <svg viewBox="0 0 32 32" className={cls} fill="none">
+          <rect x="3" y="20" width="4" height="8" rx="1" fill="currentColor" opacity=".5"/>
+          <rect x="9" y="14" width="4" height="14" rx="1" fill="currentColor" opacity=".65"/>
+          <rect x="15" y="8" width="4" height="20" rx="1" fill="currentColor" opacity=".8"/>
+          <rect x="21" y="4" width="4" height="24" rx="1" fill="currentColor" opacity=".9"/>
+          <path d="M27 6l2-2M27 6l-2-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
         </svg>
       );
     default:
@@ -381,6 +404,7 @@ export default function Home() {
               <option value="Traversal">Traversal</option>
               <option value="Optimization">Optimization</option>
               <option value="MST">MST</option>
+              <option value="Sorting">Sorting</option>
             </select>
             <svg className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 9l6 6 6-6" />

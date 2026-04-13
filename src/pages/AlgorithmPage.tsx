@@ -1653,6 +1653,195 @@ function KruskalPage() {
   );
 }
 
+/* ─────────────── Sorting Page ─────────────── */
+
+import SortingArrayCanvas from '../algorithms/sorting/ArrayCanvas';
+import SortingCodeViewer  from '../algorithms/sorting/CodeViewer';
+import SortingProblemList from '../algorithms/sorting/ProblemList';
+import SortingInfoModal   from '../algorithms/sorting/InfoModal';
+import { DEFAULT_ARRAY, SORT_LABELS } from '../algorithms/sorting/types';
+import type { SortStep, SortAlgorithm } from '../algorithms/sorting/types';
+import { generateBubbleSortSteps }     from '../algorithms/sorting/bubbleSort';
+import { generateSelectionSortSteps }  from '../algorithms/sorting/selectionSort';
+import { generateInsertionSortSteps }  from '../algorithms/sorting/insertionSort';
+import { generateMergeSortSteps }      from '../algorithms/sorting/mergeSort';
+import { generateQuickSortSteps }      from '../algorithms/sorting/quickSort';
+import { generateHeapSortSteps }       from '../algorithms/sorting/heapSort';
+
+const SORT_TABS: SortAlgorithm[] = ['bubble', 'selection', 'insertion', 'merge', 'quick', 'heap'];
+
+const SORT_GENERATORS: Record<SortAlgorithm, (arr: number[]) => SortStep[]> = {
+  bubble: generateBubbleSortSteps,
+  selection: generateSelectionSortSteps,
+  insertion: generateInsertionSortSteps,
+  merge: generateMergeSortSteps,
+  quick: generateQuickSortSteps,
+  heap: generateHeapSortSteps,
+};
+
+function SortingPage() {
+  const [algorithm, setAlgorithm] = useState<SortAlgorithm>('bubble');
+  const [currentStepIdx, setCurrentStepIdx] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [speed, setSpeed] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inputArray, setInputArray] = useState<number[]>(DEFAULT_ARRAY);
+  const [inputText, setInputText] = useState('');
+
+  const steps = useMemo<SortStep[]>(
+    () => SORT_GENERATORS[algorithm](inputArray),
+    [algorithm, inputArray],
+  );
+  const step = steps[currentStepIdx] ?? steps[0];
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    if (currentStepIdx >= steps.length - 1) {
+      const t = window.setTimeout(() => setIsPlaying(false), 0);
+      return () => clearTimeout(t);
+    }
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 1000 / speed);
+    return () => clearTimeout(t);
+  }, [isPlaying, currentStepIdx, steps.length, speed]);
+
+  const handleAlgorithmChange = (algo: SortAlgorithm) => {
+    setAlgorithm(algo);
+    setCurrentStepIdx(0);
+    setIsPlaying(false);
+  };
+
+  const handleRandomArray = () => {
+    const size = 12;
+    const arr = Array.from({ length: size }, () => Math.floor(Math.random() * 90) + 5);
+    setInputArray(arr);
+    setCurrentStepIdx(0);
+    setIsPlaying(false);
+  };
+
+  const handleReversed = () => {
+    const arr = Array.from({ length: 12 }, (_, i) => 12 - i).map(v => v * 7);
+    setInputArray(arr);
+    setCurrentStepIdx(0);
+    setIsPlaying(false);
+  };
+
+  const handleNearlySorted = () => {
+    const arr = [3, 7, 9, 10, 15, 27, 29, 38, 52, 43, 64, 82]; // almost sorted
+    setInputArray(arr);
+    setCurrentStepIdx(0);
+    setIsPlaying(false);
+  };
+
+  const handleCustomInput = () => {
+    const parsed = inputText.split(/[,\s]+/).map(Number).filter(v => !isNaN(v) && v > 0);
+    if (parsed.length >= 2 && parsed.length <= 20) {
+      setInputArray(parsed);
+      setCurrentStepIdx(0);
+      setIsPlaying(false);
+      setInputText('');
+    }
+  };
+
+  const bannerClass =
+    step.type === 'DONE'   ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200' :
+    step.type === 'SWAP'   ? 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200' :
+    step.type === 'PIVOT'  ? 'bg-violet-50 dark:bg-violet-900/20 text-violet-800 dark:text-violet-200' :
+    step.type === 'SORTED' ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200' :
+    'bg-zinc-100 dark:bg-accent/50 text-zinc-700 dark:text-muted-foreground';
+
+  const label = SORT_LABELS[algorithm];
+
+  return (
+    <div className="flex flex-col min-h-[calc(100vh-8rem)] lg:flex-row gap-6 pb-16">
+      <div className="flex-1 w-full lg:min-w-[600px] border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm flex flex-col min-h-[650px] lg:min-h-0">
+
+        {/* ── Tabs ── */}
+        <div className="flex border-b bg-muted/20 px-2 sm:px-4 py-2 gap-1 sm:gap-2 overflow-x-auto">
+          {SORT_TABS.map(algo => (
+            <button
+              key={algo}
+              onClick={() => handleAlgorithmChange(algo)}
+              className={`px-2.5 sm:px-3 py-1.5 font-bold text-xs sm:text-sm rounded-lg transition-colors whitespace-nowrap shrink-0 ${
+                algorithm === algo
+                  ? 'bg-white dark:bg-zinc-800 shadow-sm text-rose-600 dark:text-rose-400'
+                  : 'text-muted-foreground hover:bg-white/50 dark:hover:bg-zinc-800/50'
+              }`}
+            >
+              {SORT_LABELS[algo].kor}
+            </button>
+          ))}
+        </div>
+
+        {/* ── Header ── */}
+        <div className="p-3 lg:p-4 border-b flex justify-between items-center bg-muted/30 flex-wrap gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            <h2 className="font-semibold text-base lg:text-lg tracking-tight">{label.kor} 시각화</h2>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-rose-300 dark:border-rose-700 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors"
+            >정렬이란? 💡</button>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <span className="font-mono bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800">
+              비교: {step.compares}
+            </span>
+            <span className="font-mono bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-2 py-0.5 rounded border border-red-200 dark:border-red-800">
+              교환: {step.swaps}
+            </span>
+          </div>
+        </div>
+
+        {/* ── Banner ── */}
+        <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>
+          {step.description}
+        </div>
+
+        {/* ── Array Canvas ── */}
+        <div className="flex-1 min-h-[260px] overflow-hidden">
+          <SortingArrayCanvas step={step} />
+        </div>
+
+        {/* ── Array controls ── */}
+        <div className="px-3 py-2 border-t bg-muted/20 flex flex-wrap items-center gap-2 text-xs">
+          <button onClick={handleRandomArray} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold transition-colors">랜덤</button>
+          <button onClick={handleReversed} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold transition-colors">역순</button>
+          <button onClick={handleNearlySorted} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold transition-colors">거의 정렬</button>
+          <div className="flex items-center gap-1.5 ml-auto">
+            <input
+              type="text"
+              value={inputText}
+              onChange={e => setInputText(e.target.value)}
+              placeholder="3,7,1,9,..."
+              className="h-7 w-28 sm:w-36 rounded-md border bg-card px-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary/40"
+            />
+            <button onClick={handleCustomInput} className="px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground font-semibold transition-colors hover:bg-primary/90">적용</button>
+          </div>
+        </div>
+
+        <StepController
+          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying} speed={speed} onSpeedChange={setSpeed}
+          onPlayPause={() => setIsPlaying(p => !p)}
+          onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
+          onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
+          onFirst={() => { setIsPlaying(false); setCurrentStepIdx(0); }}
+          onLast={() => { setIsPlaying(false); setCurrentStepIdx(steps.length - 1); }}
+        />
+      </div>
+
+      <RightPanel>
+        <SortingCodeViewer codeLine={step.codeLine} algorithm={algorithm} />
+        <SortingProblemList />
+      </RightPanel>
+
+      <SortingInfoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); }}
+      />
+    </div>
+  );
+}
+
 /* ─────────────── Router ─────────────── */
 export default function AlgorithmPage() {
   const { slug } = useParams();
@@ -1664,6 +1853,7 @@ export default function AlgorithmPage() {
   if (slug === 'floyd-warshall') return <FloydWarshallPage />;
   if (slug === 'topological')   return <TopologicalPage />;
   if (slug === 'kruskal')       return <KruskalPage />;
+  if (slug === 'sorting')       return <SortingPage />;
   return <div className="p-8 text-center text-muted-foreground">알고리즘을 찾을 수 없습니다.</div>;
 }
 

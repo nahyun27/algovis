@@ -1,0 +1,46 @@
+import { ExternalLink } from 'lucide-react';
+
+const PROBLEMS = [
+  { id: 2750,  title: '수 정렬하기',   tier: 'Bronze II', nLimit: 'N ≤ 1,000',   note: '기본 정렬' },
+  { id: 2751,  title: '수 정렬하기 2', tier: 'Silver V',  nLimit: 'N ≤ 1,000,000', note: 'O(N log N) 필요' },
+  { id: 10989, title: '수 정렬하기 3', tier: 'Silver V',  nLimit: 'N ≤ 10,000,000', note: '카운팅 정렬' },
+  { id: 11931, title: '수 정렬하기 4', tier: 'Silver V',  nLimit: 'N ≤ 1,000,000', note: '내림차순 정렬' },
+];
+
+export default function SortingProblemList() {
+  return (
+    <div className="border rounded-xl bg-card shadow-sm overflow-hidden flex flex-col min-h-64">
+      <div className="p-3 border-b bg-muted/30 flex-shrink-0">
+        <h2 className="font-semibold tracking-tight text-sm">Related Problems (BOJ)</h2>
+      </div>
+      <div className="p-0 overflow-y-auto">
+        <ul className="divide-y divide-border">
+          {PROBLEMS.map(prob => (
+            <li key={prob.id} className="p-4 hover:bg-muted/50 transition-colors">
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-sm bg-muted/50 px-1 rounded">{prob.id}</span>
+                  <span className="font-semibold text-sm">{prob.title}</span>
+                  <a href={`https://acmicpc.net/problem/${prob.id}`} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+                <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold tracking-wide border ${
+                  prob.tier.startsWith('Silver')
+                    ? 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                    : 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-400 border-amber-200 dark:border-amber-800'
+                }`}>
+                  {prob.tier}
+                </span>
+              </div>
+              <div className="flex gap-2 mt-2 text-xs font-medium text-muted-foreground">
+                <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded shadow-sm">{prob.nLimit}</span>
+                <span className="bg-muted px-1.5 py-0.5 rounded shadow-sm">{prob.note}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}

@@ -15,6 +15,7 @@ const links = [
   { name: 'Floyd-Warshall', path: '/algorithm/floyd-warshall', icon: FileCode2 },
   { name: 'Kruskal / Prim',   path: '/algorithm/kruskal',     icon: FileCode2 },
   { name: 'Topological Sort', path: '/algorithm/topological', icon: FileCode2 },
+  { name: 'Sorting',          path: '/algorithm/sorting',      icon: FileCode2 },
 ];
 
 export default function Sidebar({ onClose }: Props) {
