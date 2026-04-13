@@ -136,6 +136,7 @@ function TSPPage() {
   const [solverType, setSolverType]     = useState<SolverType>('topDown');
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isPlaying, setIsPlaying]       = useState(false);
+  const [speed, setSpeed]               = useState(1);
   const [isModalOpen, setIsModalOpen]   = useState(false);
   const [customSteps, setCustomSteps]   = useState<TSPStep[] | null>(null);
   const [customGraphMeta, setCustomGraphMeta] = useState<{
@@ -158,9 +159,9 @@ function TSPPage() {
       const t = window.setTimeout(() => setIsPlaying(false), 0);
       return () => clearTimeout(t);
     }
-    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 700);
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 1000 / speed);
     return () => clearTimeout(t);
-  }, [isPlaying, currentStepIdx, steps.length]);
+  }, [isPlaying, currentStepIdx, steps.length, speed]);
 
   const step = steps[currentStepIdx];
 
@@ -253,7 +254,7 @@ function TSPPage() {
             </div>
 
             <StepController
-              currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying}
+              currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying} speed={speed} onSpeedChange={setSpeed}
               onPlayPause={() => setIsPlaying(p => !p)}
               onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
               onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
@@ -323,6 +324,7 @@ function DijkstraPage() {
   const [mode, setMode]                 = useState<PageMode>('example');
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isPlaying, setIsPlaying]       = useState(false);
+  const [speed, setSpeed]               = useState(1);
   const [isModalOpen, setIsModalOpen]   = useState(false);
   const [customSteps, setCustomSteps]   = useState<DijkstraStep[] | null>(null);
   const [customGraphMeta, setCustomGraphMeta] = useState<{
@@ -342,9 +344,9 @@ function DijkstraPage() {
       const t = window.setTimeout(() => setIsPlaying(false), 0);
       return () => clearTimeout(t);
     }
-    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 800);
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 1000 / speed);
     return () => clearTimeout(t);
-  }, [isPlaying, currentStepIdx, steps.length]);
+  }, [isPlaying, currentStepIdx, steps.length, speed]);
 
   const step = steps[currentStepIdx];
   const shortestEdges = useMemo(
@@ -432,7 +434,7 @@ function DijkstraPage() {
             </div>
 
             <StepController
-              currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying}
+              currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying} speed={speed} onSpeedChange={setSpeed}
               onPlayPause={() => setIsPlaying(p => !p)}
               onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
               onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
@@ -484,6 +486,7 @@ function AStarPage() {
   const [mode, setMode]                 = useState<PageMode>('example');
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isPlaying, setIsPlaying]       = useState(false);
+  const [speed, setSpeed]               = useState(1);
   const [isModalOpen, setIsModalOpen]   = useState(false);
   const [customSteps, setCustomSteps]   = useState<AStarStep[] | null>(null);
   const [customGraphMeta, setCustomGraphMeta] = useState<{
@@ -503,9 +506,9 @@ function AStarPage() {
       const t = window.setTimeout(() => setIsPlaying(false), 0);
       return () => clearTimeout(t);
     }
-    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 800);
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 1000 / speed);
     return () => clearTimeout(t);
-  }, [isPlaying, currentStepIdx, steps.length]);
+  }, [isPlaying, currentStepIdx, steps.length, speed]);
 
   const step = steps[currentStepIdx];
   const shortestEdges = useMemo(
@@ -593,7 +596,7 @@ function AStarPage() {
             </div>
 
             <StepController
-              currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying}
+              currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying} speed={speed} onSpeedChange={setSpeed}
               onPlayPause={() => setIsPlaying(p => !p)}
               onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
               onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
@@ -671,6 +674,7 @@ function BFSDFSPage() {
   const [mode, setMode] = useState<PageMode>('example');
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [speed, setSpeed] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customSteps, setCustomSteps] = useState<BaseStep[] | null>(null);
   const [customN, setCustomN] = useState<number | null>(null);
@@ -688,9 +692,9 @@ function BFSDFSPage() {
       const t = window.setTimeout(() => setIsPlaying(false), 0);
       return () => clearTimeout(t);
     }
-    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), Math.max(300, 700 - steps.length * 3));
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 1000 / speed);
     return () => clearTimeout(t);
-  }, [isPlaying, currentStepIdx, steps.length]);
+  }, [isPlaying, currentStepIdx, steps.length, speed]);
 
   const step = steps[currentStepIdx] || steps[0];
 
@@ -834,7 +838,7 @@ function BFSDFSPage() {
             </div>
 
             <StepController
-              currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying}
+              currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying} speed={speed} onSpeedChange={setSpeed}
               onPlayPause={() => setIsPlaying(p => !p)}
               onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
               onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
@@ -875,6 +879,7 @@ function BellmanFordPage() {
   const [example, setExample] = useState<BFExample>('ex1');
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [speed, setSpeed] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { nodes, edges, N } = example === 'ex1'
@@ -894,9 +899,9 @@ function BellmanFordPage() {
       const t = window.setTimeout(() => setIsPlaying(false), 0);
       return () => clearTimeout(t);
     }
-    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 700);
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 1000 / speed);
     return () => clearTimeout(t);
-  }, [isPlaying, currentStepIdx, steps.length]);
+  }, [isPlaying, currentStepIdx, steps.length, speed]);
 
   const handleExampleChange = (ex: BFExample) => {
     setExample(ex);
@@ -964,7 +969,7 @@ function BellmanFordPage() {
         </div>
 
         <StepController
-          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying}
+          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying} speed={speed} onSpeedChange={setSpeed}
           onPlayPause={() => setIsPlaying(p => !p)}
           onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
           onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
@@ -993,6 +998,7 @@ function BellmanFordPage() {
 function FloydWarshallPage() {
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [speed, setSpeed] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pathFrom, setPathFrom] = useState<number>(0);
   const [pathTo, setPathTo] = useState<number>(FW_N - 1);
@@ -1008,9 +1014,9 @@ function FloydWarshallPage() {
       const t = window.setTimeout(() => setIsPlaying(false), 0);
       return () => clearTimeout(t);
     }
-    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 700);
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 1000 / speed);
     return () => clearTimeout(t);
-  }, [isPlaying, currentStepIdx, steps.length]);
+  }, [isPlaying, currentStepIdx, steps.length, speed]);
 
   const pathNodes = useMemo(() => {
     if (!showPath || !isDone) return [];
@@ -1114,7 +1120,7 @@ function FloydWarshallPage() {
         </div>
 
         <StepController
-          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying}
+          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying} speed={speed} onSpeedChange={setSpeed}
           onPlayPause={() => setIsPlaying(p => !p)}
           onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
           onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
@@ -1147,6 +1153,7 @@ function TopologicalPage() {
   const [example, setExample]           = useState<TopoExample>('dag');
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isPlaying, setIsPlaying]       = useState(false);
+  const [speed, setSpeed]               = useState(1);
   const [isModalOpen, setIsModalOpen]   = useState(false);
 
   const { nodes, edges, N } = example === 'dag'
@@ -1168,9 +1175,9 @@ function TopologicalPage() {
       const t = window.setTimeout(() => setIsPlaying(false), 0);
       return () => clearTimeout(t);
     }
-    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 700);
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 1000 / speed);
     return () => clearTimeout(t);
-  }, [isPlaying, currentStepIdx, steps.length]);
+  }, [isPlaying, currentStepIdx, steps.length, speed]);
 
   const handleAlgoChange = (mode: TopoAlgoMode) => {
     setAlgoMode(mode);
@@ -1303,7 +1310,7 @@ function TopologicalPage() {
         </div>
 
         <StepController
-          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying}
+          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying} speed={speed} onSpeedChange={setSpeed}
           onPlayPause={() => setIsPlaying(p => !p)}
           onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
           onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
@@ -1335,6 +1342,7 @@ function KruskalPage() {
   const [kruskalIdx, setKruskalIdx]           = useState(0);
   const [primIdx, setPrimIdx]                 = useState(0);
   const [isPlaying, setIsPlaying]             = useState(false);
+  const [speed, setSpeed]                     = useState(1);
   const [isKruskalModalOpen, setKruskalModal] = useState(false);
   const [isPrimModalOpen, setPrimModal]       = useState(false);
 
@@ -1358,9 +1366,9 @@ function KruskalPage() {
       const t = window.setTimeout(() => setIsPlaying(false), 0);
       return () => clearTimeout(t);
     }
-    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 800);
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 1000 / speed);
     return () => clearTimeout(t);
-  }, [isPlaying, currentStepIdx, steps.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isPlaying, currentStepIdx, steps.length, speed]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleTabChange = (newTab: KruskalPrimTab) => {
     setTab(newTab);
@@ -1608,7 +1616,7 @@ function KruskalPage() {
         </div>
 
         <StepController
-          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying}
+          currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying} speed={speed} onSpeedChange={setSpeed}
           onPlayPause={() => setIsPlaying(p => !p)}
           onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
           onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
