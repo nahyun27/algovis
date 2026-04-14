@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, ChevronDown, Hash, LayoutGrid, Zap, Search, Activity, Box, Moon, Sun } from 'lucide-react';
+import { Home, ChevronDown, Hash, LayoutGrid, Zap, Search, Activity, Box, Moon, Sun, type LucideIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 interface CategoryItem {
   name: string;
   path: string;
-  icon: any;
+  icon: LucideIcon;
 }
 
 interface Category {

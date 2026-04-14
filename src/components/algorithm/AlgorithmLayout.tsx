@@ -4,7 +4,7 @@ interface AlgorithmLayoutProps {
   /** The fixed top header bar (title, buttons) */
   header: ReactNode;
   /** Everything that scrolls as one unit: banner + graph + table etc. */
-  scrollable: ReactNode;
+  scrollable?: ReactNode;
   /** The fixed bottom playback controller */
   stepController?: ReactNode;
   /** The right side code/problem panel */
