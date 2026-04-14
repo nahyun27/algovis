@@ -37,18 +37,20 @@ export default function AlgorithmLayout({
   isEditorMode = false,
 }: AlgorithmLayoutProps) {
   return (
-    <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 p-4 sm:p-6 md:p-8 pt-4 lg:pt-6 h-full min-h-0 overflow-hidden">
+    <div className="flex flex-col lg:flex-row gap-4 lg:gap-5 p-4 sm:p-5 md:p-6 pt-4 lg:pt-5 h-full min-h-0 overflow-hidden">
 
       {/* ── Center Panel ── */}
-      <div className="flex-1 flex flex-col lg:min-w-[600px] border border-border/40 rounded-2xl overflow-hidden bg-card/80 backdrop-blur-md text-card-foreground shadow-xl dark:shadow-[0_8px_30px_rgba(99,102,241,0.08)] min-h-0 h-full">
+      <div className="flex-1 flex flex-col lg:min-w-[600px] rounded-2xl overflow-hidden bg-card/90 backdrop-blur-md text-card-foreground shadow-lg dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] border border-white/10 dark:border-white/5 min-h-0 h-full">
 
         {isEditorMode && editor ? (
           /* Editor mode – header fixed, editor fills the rest */
           <>
             {/* ① Fixed Header */}
-            <div className="shrink-0 bg-muted/30 border-b border-border/40">
+            <div className="shrink-0">
               {header}
             </div>
+            {/* subtle separator */}
+            <div className="h-px bg-gradient-to-r from-transparent via-border/30 to-transparent shrink-0" />
             <div className="flex-1 overflow-hidden flex flex-col min-h-0">
               {editor}
             </div>
@@ -56,18 +58,20 @@ export default function AlgorithmLayout({
         ) : (
           <>
             {/* ① Fixed Header */}
-            <div className="shrink-0 bg-muted/30 border-b border-border/40">
+            <div className="shrink-0">
               {header}
             </div>
+            {/* subtle separator */}
+            <div className="h-px bg-gradient-to-r from-transparent via-border/30 to-transparent shrink-0" />
 
             {/* ② Scrollable body (banner + graph + table) – ONE scroll context */}
             <div className="flex-1 overflow-y-auto min-h-0">
               {scrollable}
             </div>
 
-            {/* ③ Fixed Step Controller */}
+            {/* ③ Fixed Step Controller — no extra border wrapper, StepController owns its top edge */}
             {stepController && (
-              <div className="shrink-0 border-t border-border/40">
+              <div className="shrink-0">
                 {stepController}
               </div>
             )}

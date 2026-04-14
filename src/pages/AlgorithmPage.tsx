@@ -203,27 +203,27 @@ function TSPPage() {
       <AlgorithmLayout
         isEditorMode={mode === 'editor'}
         header={
-          <div className="p-3 lg:p-4 flex justify-between items-center flex-wrap gap-3">
+          <div className="px-4 py-3 flex justify-between items-center flex-wrap gap-3">
             <div className="flex items-center gap-3">
               <h2 className="font-semibold text-base lg:text-lg tracking-tight">TSP 비트마스크 DP 시각화</h2>
-              <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">TSP란? 💡</button>
+              <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-full border border-indigo-300/60 dark:border-indigo-700/60 text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors">TSP란? 💡</button>
             </div>
             <div className="flex items-center gap-2">
               {mode === 'example' ? (
-                <div className="flex bg-card p-1 rounded-lg border shadow-sm gap-0.5">
+                <div className="flex bg-muted/40 p-1 rounded-xl gap-0.5">
                   {(['topDown', 'bottomUp'] as SolverType[]).map(t => (
-                    <button key={t} className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${solverType === t ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'}`} onClick={() => toggleSolver(t)}>{t === 'topDown' ? 'Top-down' : 'Bottom-up'}</button>
+                    <button key={t} className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${solverType === t ? 'bg-background dark:bg-card shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'}`} onClick={() => toggleSolver(t)}>{t === 'topDown' ? 'Top-down' : 'Bottom-up'}</button>
                   ))}
                 </div>
               ) : (
-                <button onClick={() => setMode('example')} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-card border shadow-sm text-muted-foreground hover:text-foreground transition-all"><ArrowLeft size={14} />시각화로 돌아가기</button>
+                <button onClick={() => setMode('example')} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-muted/50 text-muted-foreground hover:text-foreground transition-all"><ArrowLeft size={14} />시각화로 돌아가기</button>
               )}
             </div>
           </div>
         }
         scrollable={
           <div className="flex flex-col">
-            <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${step.description.startsWith('[종료]') ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200' : step.isImprovement ? 'bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-200' : 'bg-zinc-100 dark:bg-accent/50 text-zinc-700 dark:text-muted-foreground'}`}>{step.description}</div>
+            <div className={`px-4 py-2.5 font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${step.description.startsWith('[종료]') ? 'bg-blue-50/70 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300' : step.isImprovement ? 'bg-green-50/70 dark:bg-green-900/20 text-green-800 dark:text-green-300' : 'bg-muted/30 text-muted-foreground'}`}>{step.description}</div>
             <div className="flex flex-col xl:flex-row divide-y xl:divide-y-0 xl:divide-x divide-border">
               <div className="w-full xl:w-2/5 relative group min-h-[280px]">
                 <TSPGraphCanvas currentMask={step.mask} currentCity={step.currentCity} nextCity={step.nextCity} activeEdge={step.activeEdge} customNodes={customNodes} customW={customW} />
@@ -345,23 +345,26 @@ function DijkstraPage() {
       <AlgorithmLayout
         isEditorMode={mode === 'editor'}
         header={
-          <div className="p-3 lg:p-4 flex justify-between items-center flex-wrap gap-3">
+          <div className="px-4 py-3 flex justify-between items-center flex-wrap gap-3">
             <div className="flex items-center gap-3">
               <h2 className="font-semibold text-base lg:text-lg tracking-tight">다익스트라 최단경로 시각화</h2>
-              <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors">다익스트라란? 💡</button>
+              <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-full border border-emerald-300/60 dark:border-emerald-700/60 text-emerald-600 dark:text-emerald-400 bg-emerald-50/80 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors">다익스트라란? 💡</button>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              {mode === 'example' ? (
-                <div className={`text-xs font-bold px-3 py-1 rounded-full border ${step.type === 'DEQUEUE' ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' : step.type === 'RELAX' ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 border-orange-300 dark:border-orange-700' : step.type === 'VISITED' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700' : step.type === 'DONE' ? 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700' : 'bg-muted text-muted-foreground border-border'}`}>{step.type}</div>
-              ) : (
-                <button onClick={() => setMode('example')} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-card border shadow-sm text-muted-foreground hover:text-foreground transition-all"><ArrowLeft size={14} />시각화로 돌아가기</button>
+              {mode === 'editor' && (
+                <button onClick={() => setMode('example')} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-muted/50 text-muted-foreground hover:text-foreground transition-all"><ArrowLeft size={14} />시각화로 돌아가기</button>
               )}
             </div>
           </div>
         }
         scrollable={
           <div className="flex flex-col">
-            <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>{step.description}</div>
+            <div className={`px-4 py-2 flex items-center justify-center min-h-[42px] transition-all duration-300 relative ${bannerClass}`}>
+              <div className="font-medium text-sm text-center px-12">{step.description}</div>
+              {mode === 'example' && (
+                <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${step.type === 'DEQUEUE' ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400' : step.type === 'RELAX' ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400' : step.type === 'VISITED' ? 'bg-green-500/20 text-green-600 dark:text-green-400' : step.type === 'DONE' ? 'bg-indigo-500/20 text-indigo-600 dark:text-indigo-400' : 'bg-muted/60 text-muted-foreground'}`}>{step.type}</div>
+              )}
+            </div>
             <div className="flex flex-col divide-y divide-border">
               <div className="w-full relative group min-h-[280px]">
                 <DijkstraGraphCanvas step={step} shortestEdges={shortestEdges} customNodes={customNodes} customEdges={customEdges} />
@@ -465,23 +468,26 @@ function AStarPage() {
       <AlgorithmLayout
         isEditorMode={mode === 'editor'}
         header={
-          <div className="p-3 lg:p-4 flex justify-between items-center flex-wrap gap-3">
+          <div className="px-4 py-3 flex justify-between items-center flex-wrap gap-3">
             <div className="flex items-center gap-3">
               <h2 className="font-semibold text-base lg:text-lg tracking-tight">A* (A-Star) 길찾기 시각화</h2>
-              <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-purple-300 dark:border-purple-700 text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors">A*란? 💡</button>
+              <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-full border border-purple-300/60 dark:border-purple-700/60 text-purple-600 dark:text-purple-400 bg-purple-50/80 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors">A*란? 💡</button>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              {mode === 'example' ? (
-                <div className={`text-xs font-bold px-3 py-1 rounded-full border ${step.type === 'DEQUEUE' ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' : step.type === 'RELAX' ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 border-orange-300 dark:border-orange-700' : step.type === 'CLOSE' ? 'bg-zinc-200 dark:bg-accent text-zinc-700 dark:text-muted-foreground border-zinc-300 dark:border-accent' : step.type === 'DONE' ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-700' : 'bg-muted text-muted-foreground border-border'}`}>{step.type}</div>
-              ) : (
-                <button onClick={() => setMode('example')} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-card border shadow-sm text-muted-foreground hover:text-foreground transition-all"><ArrowLeft size={14} />시각화로 돌아가기</button>
+              {mode === 'editor' && (
+                <button onClick={() => setMode('example')} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-muted/50 text-muted-foreground hover:text-foreground transition-all"><ArrowLeft size={14} />시각화로 돌아가기</button>
               )}
             </div>
           </div>
         }
         scrollable={
           <div className="flex flex-col">
-            <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>{step.description}</div>
+            <div className={`px-4 py-2 flex items-center justify-center min-h-[42px] transition-all duration-300 relative ${bannerClass}`}>
+              <div className="font-medium text-sm text-center px-12">{step.description}</div>
+              {mode === 'example' && (
+                <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${step.type === 'DEQUEUE' ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400' : step.type === 'RELAX' ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400' : step.type === 'CLOSE' ? 'bg-muted text-muted-foreground' : step.type === 'DONE' ? 'bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-muted/60 text-muted-foreground'}`}>{step.type}</div>
+              )}
+            </div>
             <div className="flex flex-col divide-y divide-border">
               <div className="w-full relative group min-h-[280px]">
                 <AStarGraphCanvas step={step} shortestEdges={shortestEdges} customNodes={customNodes} customEdges={customEdges} />
@@ -611,22 +617,22 @@ function BFSDFSPage() {
         isEditorMode={mode === 'editor'}
         header={
           <div className="flex flex-col">
-            <div className="flex border-b bg-muted/20 px-4 py-2 gap-4">
-              <button onClick={() => handleAlgorithmChange('BFS')} className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${algoMode === 'BFS' ? 'bg-white dark:bg-zinc-800 shadow-sm text-sky-600 dark:text-sky-400' : 'text-muted-foreground hover:bg-white/50 dark:hover:bg-zinc-800/50'}`}>너비 우선 탐색 (BFS)</button>
-              <button onClick={() => handleAlgorithmChange('DFS')} className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${algoMode === 'DFS' ? 'bg-white dark:bg-zinc-800 shadow-sm text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground hover:bg-white/50 dark:hover:bg-zinc-800/50'}`}>깊이 우선 탐색 (DFS)</button>
+            <div className="flex px-3 pt-3 pb-1 gap-1">
+              <button onClick={() => handleAlgorithmChange('BFS')} className={`px-4 py-2 font-semibold text-sm rounded-xl transition-all ${algoMode === 'BFS' ? 'bg-sky-100/80 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 shadow-sm' : 'text-muted-foreground/70 hover:text-foreground hover:bg-muted/50'}`}>너비 우선 탐색 (BFS)</button>
+              <button onClick={() => handleAlgorithmChange('DFS')} className={`px-4 py-2 font-semibold text-sm rounded-xl transition-all ${algoMode === 'DFS' ? 'bg-emerald-100/80 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 shadow-sm' : 'text-muted-foreground/70 hover:text-foreground hover:bg-muted/50'}`}>깊이 우선 탐색 (DFS)</button>
             </div>
-            <div className="p-4 flex justify-between items-center bg-white dark:bg-zinc-900">
+            <div className="px-4 pb-3 pt-2 flex justify-between items-start">
               <div>
-                <h1 className="text-xl font-bold tracking-tight mb-1">{algoMode === 'BFS' ? '너비 우선 탐색 (BFS)' : '깊이 우선 탐색 (DFS)'}</h1>
-                <p className="text-sm text-muted-foreground line-clamp-1">{algoMode === 'BFS' ? '큐(Queue)를 이용하여 가장 가까운 주변 노드부터 차례대로 탐색합니다.' : '스택(Stack)을 이용하여 연결된 한 갈래를 끝까지 깊게 탐색합니다.'}</p>
+                <h1 className="text-base font-bold tracking-tight">{algoMode === 'BFS' ? '너비 우선 탐색 (BFS)' : '깊이 우선 탐색 (DFS)'}</h1>
+                <p className="text-xs text-muted-foreground/70 mt-0.5 line-clamp-1">{algoMode === 'BFS' ? '큐(Queue)를 이용하여 가장 가까운 주변 노드부터 차례대로 탐색합니다.' : '스택(Stack)을 이용하여 연결된 한 갈래를 끝까지 깊게 탐색합니다.'}</p>
               </div>
-              <button onClick={() => setIsModalOpen(true)} className="px-4 py-1.5 text-sm font-semibold border rounded-md hover:bg-muted transition-colors text-zinc-700 dark:text-muted-foreground whitespace-nowrap">{algoMode} 란?</button>
+              <button onClick={() => setIsModalOpen(true)} className="shrink-0 ml-3 text-xs font-semibold px-2.5 py-1 rounded-full border border-sky-300/60 dark:border-sky-700/60 text-sky-600 dark:text-sky-400 bg-sky-50/80 dark:bg-sky-900/20 hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors whitespace-nowrap">{algoMode} 란? 💡</button>
             </div>
           </div>
         }
         scrollable={
           <div className="flex flex-col">
-            <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>{step.description}</div>
+            <div className={`px-4 py-2.5 font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-all duration-300 ${bannerClass}`}>{step.description}</div>
             {algoMode === 'BFS' ? (
               <div className="flex flex-col divide-y divide-border">
                 <div className="w-full min-h-[280px] relative group">
@@ -723,22 +729,24 @@ function BellmanFordPage() {
     <>
       <AlgorithmLayout
         header={
-          <div className="p-3 lg:p-4 flex justify-between items-center flex-wrap gap-3">
-            <div className="flex items-center gap-3 flex-wrap">
+          <div className="px-4 py-3 flex justify-between items-center flex-wrap gap-3">
+            <div className="flex items-center gap-2.5 flex-wrap">
               <h2 className="font-semibold text-base lg:text-lg tracking-tight">벨만-포드 최단경로 시각화</h2>
-              <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-rose-300 dark:border-rose-700 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors">벨만-포드란? 💡</button>
-              <div className="flex gap-1 bg-muted/40 rounded-lg p-1">
+              <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-full border border-rose-300/60 dark:border-rose-700/60 text-rose-600 dark:text-rose-400 bg-rose-50/80 dark:bg-rose-900/20 hover:bg-rose-100 dark:hover:bg-rose-900/40 transition-colors">벨만-포드란? 💡</button>
+              <div className="flex gap-0.5 bg-muted/40 rounded-xl p-1">
                 {(['ex1', 'ex2'] as BFExample[]).map(ex => (
-                  <button key={ex} onClick={() => handleExampleChange(ex)} className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${example === ex ? 'bg-white dark:bg-accent shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>{ex === 'ex1' ? '기본 예제 (음수 간선)' : '음수 사이클 예제'}</button>
+                  <button key={ex} onClick={() => handleExampleChange(ex)} className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${example === ex ? 'bg-background dark:bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>{ex === 'ex1' ? '기본 예제' : '음수 사이클'}</button>
                 ))}
               </div>
             </div>
-            <div className={`text-xs font-bold px-3 py-1 rounded-full border ${step.type === 'NEGATIVE_CYCLE' ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700' : step.type === 'RELAX' ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 border-orange-300 dark:border-orange-700' : step.type === 'DONE' ? 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700' : step.type === 'ROUND_START' ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' : 'bg-muted text-muted-foreground border-border'}`}>{step.type}</div>
           </div>
         }
         scrollable={
           <div className="flex flex-col">
-            <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>{step.description}</div>
+            <div className={`px-4 py-2 flex items-center justify-center min-h-[42px] transition-all duration-300 relative ${bannerClass}`}>
+              <div className="font-medium text-sm text-center px-12">{step.description}</div>
+              <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${step.type === 'NEGATIVE_CYCLE' ? 'bg-red-500/20 text-red-600 dark:text-red-400' : step.type === 'RELAX' ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400' : step.type === 'DONE' ? 'bg-indigo-500/20 text-indigo-600 dark:text-indigo-400' : step.type === 'ROUND_START' ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400' : 'bg-muted/60 text-muted-foreground'}`}>{step.type}</div>
+            </div>
             <div className="flex flex-col divide-y divide-border">
               <div className="w-full min-h-[280px] relative">
                 <BFGraphCanvas step={step} nodes={nodes} edges={edges} />
@@ -813,17 +821,19 @@ function FloydWarshallPage() {
     <>
       <AlgorithmLayout
         header={
-          <div className="p-3 lg:p-4 flex justify-between items-center flex-wrap gap-3">
+          <div className="px-4 py-3 flex justify-between items-center flex-wrap gap-3">
             <div className="flex items-center gap-3 flex-wrap">
               <h2 className="font-semibold text-base lg:text-lg tracking-tight">플로이드-워셜 최단경로 시각화</h2>
-              <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-violet-300 dark:border-violet-700 text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/30 hover:bg-violet-100 dark:hover:bg-violet-900/50 transition-colors">플로이드-워셜이란? 💡</button>
+              <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-full border border-violet-300/60 dark:border-violet-700/60 text-violet-600 dark:text-violet-400 bg-violet-50/80 dark:bg-violet-900/20 hover:bg-violet-100 dark:hover:bg-violet-900/40 transition-colors">플로이드-워셜이란? 💡</button>
             </div>
-            <div className={`text-xs font-bold px-3 py-1 rounded-full border ${step.type === 'NEGATIVE_CYCLE' ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700' : step.type === 'DONE' ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700' : step.type === 'UPDATE' ? 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-700' : step.type === 'ROUND_START' ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 border-violet-300 dark:border-violet-700' : 'bg-muted text-muted-foreground border-border'}`}>{step.type}</div>
           </div>
         }
         scrollable={
           <div className="flex flex-col">
-            <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>{step.description}</div>
+            <div className={`px-4 py-2 flex items-center justify-center min-h-[42px] transition-all duration-300 relative ${bannerClass}`}>
+              <div className="font-medium text-sm text-center px-12">{step.description}</div>
+              <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${step.type === 'NEGATIVE_CYCLE' ? 'bg-red-500/20 text-red-600 dark:text-red-400' : step.type === 'DONE' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : step.type === 'UPDATE' ? 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400' : step.type === 'ROUND_START' ? 'bg-violet-500/20 text-violet-600 dark:text-violet-400' : 'bg-muted/60 text-muted-foreground'}`}>{step.type}</div>
+            </div>
             {isDone && (
               <div className="px-4 py-2.5 border-b bg-violet-50/50 dark:bg-violet-900/10 flex items-center gap-3 flex-wrap text-sm">
                 <span className="font-semibold text-violet-700 dark:text-violet-400 text-xs">경로 탐색:</span>
@@ -932,27 +942,29 @@ function TopologicalPage() {
       <AlgorithmLayout
         header={
           <div className="flex flex-col">
-            <div className="flex border-b bg-muted/20 px-4 py-2 gap-4">
-              <button onClick={() => handleAlgoChange('Kahn')} className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${algoMode === 'Kahn' ? 'bg-white dark:bg-zinc-800 shadow-sm text-violet-600 dark:text-violet-400' : 'text-muted-foreground hover:bg-white/50 dark:hover:bg-zinc-800/50'}`}>칸의 알고리즘 (Kahn)</button>
-              <button onClick={() => handleAlgoChange('DFS')} className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${algoMode === 'DFS' ? 'bg-white dark:bg-zinc-800 shadow-sm text-indigo-600 dark:text-indigo-400' : 'text-muted-foreground hover:bg-white/50 dark:hover:bg-zinc-800/50'}`}>DFS 방식</button>
+            <div className="flex px-3 pt-3 pb-1 gap-1">
+              <button onClick={() => handleAlgoChange('Kahn')} className={`px-4 py-2 font-semibold text-sm rounded-xl transition-all ${algoMode === 'Kahn' ? 'bg-violet-100/80 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 shadow-sm' : 'text-muted-foreground/70 hover:text-foreground hover:bg-muted/50'}`}>칸의 알고리즘 (Kahn)</button>
+              <button onClick={() => handleAlgoChange('DFS')} className={`px-4 py-2 font-semibold text-sm rounded-xl transition-all ${algoMode === 'DFS' ? 'bg-indigo-100/80 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 shadow-sm' : 'text-muted-foreground/70 hover:text-foreground hover:bg-muted/50'}`}>DFS 방식</button>
             </div>
-            <div className="p-3 lg:p-4 flex justify-between items-center flex-wrap gap-3">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h2 className="font-semibold text-base lg:text-lg tracking-tight">위상정렬 시각화 — {algoMode === 'Kahn' ? '칸의 알고리즘' : 'DFS 방식'}</h2>
-                <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-violet-300 dark:border-violet-700 text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/30 hover:bg-violet-100 dark:hover:bg-violet-900/50 transition-colors">위상정렬이란? 💡</button>
-                <div className="flex gap-1 bg-muted/40 rounded-lg p-1">
+            <div className="px-4 pb-3 pt-2 flex justify-between items-center flex-wrap gap-3">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h2 className="font-semibold text-base lg:text-lg tracking-tight">위상정렬 — {algoMode === 'Kahn' ? '칸의 알고리즘' : 'DFS 방식'}</h2>
+                <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-full border border-violet-300/60 dark:border-violet-700/60 text-violet-600 dark:text-violet-400 bg-violet-50/80 dark:bg-violet-900/20 hover:bg-violet-100 dark:hover:bg-violet-900/40 transition-colors">위상정렬이란? 💡</button>
+                <div className="flex gap-0.5 bg-muted/40 rounded-xl p-1">
                   {(['dag', 'cycle'] as TopoExample[]).map(ex => (
-                    <button key={ex} onClick={() => handleExampleChange(ex)} className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${example === ex ? 'bg-white dark:bg-accent shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>{ex === 'dag' ? '수강신청 예제 (DAG)' : '사이클 예제'}</button>
+                    <button key={ex} onClick={() => handleExampleChange(ex)} className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${example === ex ? 'bg-background dark:bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>{ex === 'dag' ? '수강신청 (DAG)' : '사이클'}</button>
                   ))}
                 </div>
               </div>
-              <div className={`text-xs font-bold px-3 py-1 rounded-full border ${stepType === 'CYCLE_DETECTED' ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700' : stepType === 'DONE' ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700' : stepType === 'DEQUEUE' || stepType === 'VISIT' ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' : stepType === 'DECREASE' || stepType === 'FINISH' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700' : 'bg-muted text-muted-foreground border-border'}`}>{stepType}</div>
             </div>
           </div>
         }
         scrollable={
           <div className="flex flex-col">
-            <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>{step.description}</div>
+            <div className={`px-4 py-2 flex items-center justify-center min-h-[42px] transition-all duration-300 relative ${bannerClass}`}>
+              <div className="font-medium text-sm text-center px-12">{step.description}</div>
+              <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${stepType === 'CYCLE_DETECTED' ? 'bg-red-500/20 text-red-600 dark:text-red-400' : stepType === 'DONE' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : stepType === 'DEQUEUE' || stepType === 'VISIT' ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400' : stepType === 'DECREASE' || stepType === 'FINISH' ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400' : 'bg-muted/60 text-muted-foreground'}`}>{stepType}</div>
+            </div>
             {algoMode === 'Kahn' ? (
               <div className="flex flex-col divide-y divide-border">
                 <div className="w-full min-h-[280px] relative"><TopoGraphCanvas step={step} mode={algoMode} nodes={nodes} edges={edges} /></div>
@@ -1104,21 +1116,27 @@ function KruskalPage() {
       <AlgorithmLayout
         header={
           <div className="flex flex-col">
-            <div className="flex border-b bg-muted/20 px-4 py-2 gap-2">
-              <button onClick={() => handleTabChange('kruskal')} className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${tab === 'kruskal' ? 'bg-white dark:bg-zinc-800 shadow-sm text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground hover:bg-white/50 dark:hover:bg-zinc-800/50'}`}>크루스칼 (Kruskal)</button>
-              <button onClick={() => handleTabChange('prim')} className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${tab === 'prim' ? 'bg-white dark:bg-zinc-800 shadow-sm text-sky-600 dark:text-sky-400' : 'text-muted-foreground hover:bg-white/50 dark:hover:bg-zinc-800/50'}`}>프림 (Prim)</button>
+            <div className="flex px-3 pt-3 pb-1 gap-1">
+              <button onClick={() => handleTabChange('kruskal')} className={`px-4 py-2 font-semibold text-sm rounded-xl transition-all ${tab === 'kruskal' ? 'bg-emerald-100/80 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 shadow-sm' : 'text-muted-foreground/70 hover:text-foreground hover:bg-muted/50'}`}>크루스칼 (Kruskal)</button>
+              <button onClick={() => handleTabChange('prim')} className={`px-4 py-2 font-semibold text-sm rounded-xl transition-all ${tab === 'prim' ? 'bg-sky-100/80 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 shadow-sm' : 'text-muted-foreground/70 hover:text-foreground hover:bg-muted/50'}`}>프림 (Prim)</button>
             </div>
-            <div className="p-3 lg:p-4 flex justify-between items-center flex-wrap gap-3">
-              <div className="flex items-center gap-3 flex-wrap">
-                {tab === 'kruskal' ? (<><h2 className="font-semibold text-base lg:text-lg tracking-tight">크루스칼 MST 시각화</h2><button onClick={() => setKruskalModal(true)} className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors">크루스칼이란? 💡</button></>) : (<><h2 className="font-semibold text-base lg:text-lg tracking-tight">프림 MST 시각화</h2><button onClick={() => setPrimModal(true)} className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-sky-300 dark:border-sky-700 text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/30 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors">프림이란? 💡</button></>)}
+            <div className="px-4 pb-3 pt-2 flex justify-between items-center flex-wrap gap-3">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                {tab === 'kruskal' ? (<><h2 className="font-semibold text-base lg:text-lg tracking-tight">크루스칼 MST 시각화</h2><button onClick={() => setKruskalModal(true)} className="text-xs font-semibold px-2.5 py-1 rounded-full border border-emerald-300/60 dark:border-emerald-700/60 text-emerald-600 dark:text-emerald-400 bg-emerald-50/80 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors">크루스칼이란? 💡</button></>) : (<><h2 className="font-semibold text-base lg:text-lg tracking-tight">프림 MST 시각화</h2><button onClick={() => setPrimModal(true)} className="text-xs font-semibold px-2.5 py-1 rounded-full border border-sky-300/60 dark:border-sky-700/60 text-sky-600 dark:text-sky-400 bg-sky-50/80 dark:bg-sky-900/20 hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors">프림이란? 💡</button></>)}
               </div>
-              {tab === 'kruskal' ? (<div className={`text-xs font-bold px-3 py-1 rounded-full border ${kruskalBadgeClass}`}>{kType}</div>) : (<div className={`text-xs font-bold px-3 py-1 rounded-full border ${primBadgeClass}`}>{pType}</div>)}
             </div>
           </div>
         }
         scrollable={
           <div className="flex flex-col">
-            <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${tab === 'kruskal' ? kruskalBannerClass : primBannerClass}`}>{tab === 'kruskal' ? kStep.description : pStep.description}</div>
+            <div className={`px-4 py-2 flex items-center justify-center min-h-[42px] transition-all duration-300 relative ${tab === 'kruskal' ? kruskalBannerClass : primBannerClass}`}>
+              <div className="font-medium text-sm text-center px-12">{tab === 'kruskal' ? kStep.description : pStep.description}</div>
+              {tab === 'kruskal' ? (
+                <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${kStep.type === 'MST_EDGE' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : kStep.type === 'CYCLE' ? 'bg-red-500/20 text-red-600 dark:text-red-400' : 'bg-muted/60 text-muted-foreground'}`}>{kStep.type}</div>
+              ) : (
+                <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${pStep.type === 'MST_EDGE' ? 'bg-sky-500/20 text-sky-600 dark:text-sky-400' : pStep.type === 'EXPLORE' ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400' : 'bg-muted/60 text-muted-foreground'}`}>{pStep.type}</div>
+              )}
+            </div>
             {tab === 'kruskal' ? (
               <div className="flex flex-col divide-y divide-border">
                 <div className="flex flex-col lg:flex-row lg:divide-x divide-border">
@@ -1294,21 +1312,17 @@ function SortingPage() {
       <AlgorithmLayout
         header={
           <div className="flex flex-col">
-            <div className="flex border-b bg-muted/20 px-2 sm:px-4 py-2 gap-1 sm:gap-2 overflow-x-auto items-center">
+            <div className="flex px-2 sm:px-3 pt-3 pb-1 gap-1 overflow-x-auto items-center">
               {SORT_TABS.map(algo => (
-                <button key={algo} onClick={() => handleAlgorithmChange(algo)} className={`px-2.5 sm:px-3 py-1.5 font-bold text-xs sm:text-sm rounded-lg transition-colors whitespace-nowrap shrink-0 ${algorithm === algo ? 'bg-white dark:bg-zinc-800 shadow-sm text-rose-600 dark:text-rose-400' : 'text-muted-foreground hover:bg-white/50 dark:hover:bg-zinc-800/50'}`}>{SORT_LABELS[algo].kor}</button>
+                <button key={algo} onClick={() => handleAlgorithmChange(algo)} className={`px-2.5 sm:px-3 py-1.5 font-semibold text-xs sm:text-sm rounded-xl transition-all whitespace-nowrap shrink-0 ${algorithm === algo ? 'bg-rose-100/80 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 shadow-sm' : 'text-muted-foreground/70 hover:text-foreground hover:bg-muted/50'}`}>{SORT_LABELS[algo].kor}</button>
               ))}
               <div className="flex-1" />
-              <button onClick={() => setCompareModalOpen(true)} className="px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors whitespace-nowrap shrink-0">정렬 비교</button>
+              <button onClick={() => setCompareModalOpen(true)} className="px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold rounded-lg bg-muted/40 text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap shrink-0">정렬 비교</button>
             </div>
-            <div className="p-3 lg:p-4 flex justify-between items-center flex-wrap gap-3">
-              <div className="flex items-center gap-3 flex-wrap">
+            <div className="px-4 pb-3 pt-2 flex justify-between items-center flex-wrap gap-3">
+              <div className="flex items-center gap-2.5 flex-wrap">
                 <h2 className="font-semibold text-base lg:text-lg tracking-tight">{label.kor} 시각화</h2>
-                <button onClick={() => setAlgoModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-rose-300 dark:border-rose-700 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors">{label.kor}이란? 💡</button>
-              </div>
-              <div className="flex items-center gap-2 text-xs">
-                <span className="font-mono bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800">비교: {step.compares}</span>
-                <span className="font-mono bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-2 py-0.5 rounded border border-red-200 dark:border-red-800">교환: {step.swaps}</span>
+                <button onClick={() => setAlgoModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-full border border-rose-300/60 dark:border-rose-700/60 text-rose-600 dark:text-rose-400 bg-rose-50/80 dark:bg-rose-900/20 hover:bg-rose-100 dark:hover:bg-rose-900/40 transition-colors">{label.kor}이란? 💡</button>
               </div>
             </div>
           </div>
@@ -1316,19 +1330,25 @@ function SortingPage() {
         editor={
           <div className="flex flex-col h-full min-h-0">
             {/* Banner */}
-            <div className={`shrink-0 px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>{step.description}</div>
+            <div className={`shrink-0 px-4 py-2 flex items-center justify-center min-h-[42px] transition-all duration-300 relative ${bannerClass}`}>
+              <div className="font-medium text-sm text-center px-16">{step.description}</div>
+              <div className="absolute right-3 flex items-center gap-1.5 text-[10px]">
+                <span className="font-mono bg-blue-500/10 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded">C: {step.compares}</span>
+                <span className="font-mono bg-red-500/10 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded">S: {step.swaps}</span>
+              </div>
+            </div>
             {/* Array canvas — grows to fill all remaining space */}
             <div className="flex-1 min-h-0 overflow-hidden">
               <SortingArrayCanvas step={step} />
             </div>
             {/* Array controls */}
-            <div className="shrink-0 px-3 py-2 border-t bg-muted/20 flex flex-wrap items-center gap-2 text-xs">
-              <button onClick={handleRandomArray} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold transition-colors">랜덤</button>
-              <button onClick={handleReversed} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold transition-colors">역순</button>
-              <button onClick={handleNearlySorted} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold transition-colors">거의 정렬</button>
+            <div className="shrink-0 px-3 py-2 bg-muted/10 flex flex-wrap items-center gap-1.5 text-xs">
+              <button onClick={handleRandomArray} className="px-2.5 py-1.5 rounded-lg bg-muted/50 hover:bg-muted font-semibold transition-colors">랜덤</button>
+              <button onClick={handleReversed} className="px-2.5 py-1.5 rounded-lg bg-muted/50 hover:bg-muted font-semibold transition-colors">역순</button>
+              <button onClick={handleNearlySorted} className="px-2.5 py-1.5 rounded-lg bg-muted/50 hover:bg-muted font-semibold transition-colors">거의 정렬</button>
               <div className="flex items-center gap-1.5 ml-auto">
-                <input type="text" value={inputText} onChange={e => setInputText(e.target.value)} placeholder="3,7,1,9,..." className="h-7 w-28 sm:w-36 rounded-md border bg-card px-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary/40" />
-                <button onClick={handleCustomInput} className="px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground font-semibold transition-colors hover:bg-primary/90">적용</button>
+                <input type="text" value={inputText} onChange={e => setInputText(e.target.value)} placeholder="3,7,1,9,..." className="h-7 w-28 sm:w-36 rounded-lg border border-border/40 bg-card/80 px-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary/30" />
+                <button onClick={handleCustomInput} className="px-2.5 py-1.5 rounded-lg bg-primary text-primary-foreground font-semibold transition-colors hover:bg-primary/90">적용</button>
               </div>
             </div>
             {/* Step controller fixed at bottom */}
