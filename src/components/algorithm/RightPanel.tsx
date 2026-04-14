@@ -25,7 +25,7 @@ export default function RightPanel({ children }: Props) {
 
   if (!isNarrow) {
     return (
-      <div className="hidden nw:flex flex-col gap-6 shrink-0 w-[340px] wp:w-[420px] h-full overflow-y-auto pb-4 [&>div]:bg-card/50 [&>div]:backdrop-blur-md [&>div]:border-border/40 [&>div]:shadow-xl [&>div]:rounded-2xl dark:[&>div]:shadow-[0_8px_30px_rgba(99,102,241,0.08)] [&>div]:shrink-0">
+      <div className="hidden nw:flex flex-col gap-6 shrink-0 w-[360px] wp:w-[440px] h-full overflow-y-auto px-8 pb-8 [&>div]:bg-card [&>div]:border-none [&>div]:rounded-2xl [&>div]:shadow-xl dark:[&>div]:shadow-[0_10px_30px_rgba(0,0,0,0.2)] [&>div]:shrink-0 transition-colors">
         {children}
       </div>
     );

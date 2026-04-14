@@ -8,33 +8,40 @@ const PROBLEMS = [
 
 export default function BFProblemList() {
   return (
-    <div className="border rounded-xl bg-card shadow-sm overflow-hidden flex flex-col min-h-64">
-      <div className="p-3 border-b bg-muted/30 flex-shrink-0">
-        <h2 className="font-semibold tracking-tight text-sm">Related Problems (BOJ)</h2>
+    <div className="flex flex-col min-h-[320px]">
+      <div className="p-4 flex-shrink-0">
+        <h2 className="font-bold tracking-tight text-sm flex items-center gap-2 text-foreground/90">
+          <span className="w-1 h-4 bg-rose-500 rounded-full shadow-[0_0_8px_rgba(244,63,94,0.5)]" />
+          Related Problems (BOJ)
+        </h2>
       </div>
-      <div className="p-0 overflow-y-auto">
-        <ul className="divide-y divide-border">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <ul className="">
           {PROBLEMS.map(prob => (
-            <li key={prob.id} className="p-4 hover:bg-muted/50 transition-colors">
-              <div className="flex items-center justify-between mb-1">
+            <li key={prob.id} className="p-4 hover:bg-black/5 dark:hover:bg-white/5 transition-all group cursor-pointer">
+              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm bg-muted/50 px-1 rounded">{prob.id}</span>
-                  <span className="font-semibold text-sm">{prob.title}</span>
-                  <a href={`https://acmicpc.net/problem/${prob.id}`} target="_blank" rel="noreferrer"
-                    className="text-muted-foreground hover:text-primary transition-colors">
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                  <span className="font-mono text-[10px] font-bold bg-muted/60 text-muted-foreground px-1.5 py-0.5 rounded uppercase tracking-wider">#{prob.id}</span>
+                  <span className="font-bold text-sm tracking-tight group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">{prob.title}</span>
                 </div>
-                <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold tracking-wide border
-                  ${prob.tier.startsWith('Gold')
-                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800'
-                    : 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700'}`}>
+                <a href={`https://acmicpc.net/problem/${prob.id}`} target="_blank" rel="noreferrer" className="text-muted-foreground/40 hover:text-rose-600 dark:hover:text-rose-400 transition-colors p-1 rounded-md hover:bg-rose-500/10">
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold border shadow-sm ${
+                  prob.tier.startsWith('Gold')
+                    ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-400 dark:border-yellow-500/20'
+                    : 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-500/10 dark:text-slate-400 dark:border-slate-500/20'
+                }`}>
                   {prob.tier}
                 </span>
-              </div>
-              <div className="flex gap-2 mt-2 text-xs font-medium text-muted-foreground">
-                <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded shadow-sm">{prob.nLimit}</span>
-                <span className="bg-muted px-1.5 py-0.5 rounded shadow-sm">{prob.note}</span>
+                <span className="text-[10px] bg-rose-500/10 text-rose-600 dark:text-rose-400 px-2 py-0.5 rounded-md font-bold border border-rose-500/10">
+                  {prob.nLimit}
+                </span>
+                <span className="text-[10px] bg-muted/40 text-muted-foreground px-2 py-0.5 rounded-md font-medium border border-border/10">
+                  {prob.note}
+                </span>
               </div>
             </li>
           ))}

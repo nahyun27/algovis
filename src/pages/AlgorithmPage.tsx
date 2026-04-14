@@ -223,7 +223,10 @@ function TSPPage() {
         }
         scrollable={
           <div className="flex flex-col">
-            <div className={`px-4 py-2.5 font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${step.description.startsWith('[종료]') ? 'bg-blue-50/70 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300' : step.isImprovement ? 'bg-green-50/70 dark:bg-green-900/20 text-green-800 dark:text-green-300' : 'bg-muted/30 text-muted-foreground'}`}>{step.description}</div>
+            <div className={`shrink-0 px-4 py-2 flex items-center justify-center min-h-[42px] transition-all duration-300 relative ${step.description.startsWith('[종료]') ? 'bg-blue-50/70 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300' : step.isImprovement ? 'bg-green-50/70 dark:bg-green-900/20 text-green-800 dark:text-green-300' : 'bg-muted/30 text-muted-foreground'}`}>
+              <div className="font-medium text-sm text-center px-12">{step.description}</div>
+              <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${step.description.startsWith('[종료]') ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400' : step.isImprovement ? 'bg-green-500/20 text-green-600 dark:text-green-400' : 'bg-muted text-muted-foreground'}`}>{step.description.startsWith('[종료]') ? 'DONE' : step.isImprovement ? 'UPDATE' : 'INIT'}</div>
+            </div>
             <div className="flex flex-col xl:flex-row divide-y xl:divide-y-0 xl:divide-x divide-border">
               <div className="w-full xl:w-2/5 relative group min-h-[280px]">
                 <TSPGraphCanvas currentMask={step.mask} currentCity={step.currentCity} nextCity={step.nextCity} activeEdge={step.activeEdge} customNodes={customNodes} customW={customW} />
@@ -617,22 +620,22 @@ function BFSDFSPage() {
         isEditorMode={mode === 'editor'}
         header={
           <div className="flex flex-col">
+          <div className="flex flex-col">
             <div className="flex px-3 pt-3 pb-1 gap-1">
               <button onClick={() => handleAlgorithmChange('BFS')} className={`px-4 py-2 font-semibold text-sm rounded-xl transition-all ${algoMode === 'BFS' ? 'bg-sky-100/80 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 shadow-sm' : 'text-muted-foreground/70 hover:text-foreground hover:bg-muted/50'}`}>너비 우선 탐색 (BFS)</button>
               <button onClick={() => handleAlgorithmChange('DFS')} className={`px-4 py-2 font-semibold text-sm rounded-xl transition-all ${algoMode === 'DFS' ? 'bg-emerald-100/80 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 shadow-sm' : 'text-muted-foreground/70 hover:text-foreground hover:bg-muted/50'}`}>깊이 우선 탐색 (DFS)</button>
+              <div className="flex-1" />
+              <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-full border border-sky-300/60 dark:border-sky-700/60 text-sky-600 dark:text-sky-400 bg-sky-50/80 dark:bg-sky-900/20 hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors whitespace-nowrap shrink-0">{algoMode} 란? 💡</button>
             </div>
-            <div className="px-4 pb-3 pt-2 flex justify-between items-start">
-              <div>
-                <h1 className="text-base font-bold tracking-tight">{algoMode === 'BFS' ? '너비 우선 탐색 (BFS)' : '깊이 우선 탐색 (DFS)'}</h1>
-                <p className="text-xs text-muted-foreground/70 mt-0.5 line-clamp-1">{algoMode === 'BFS' ? '큐(Queue)를 이용하여 가장 가까운 주변 노드부터 차례대로 탐색합니다.' : '스택(Stack)을 이용하여 연결된 한 갈래를 끝까지 깊게 탐색합니다.'}</p>
-              </div>
-              <button onClick={() => setIsModalOpen(true)} className="shrink-0 ml-3 text-xs font-semibold px-2.5 py-1 rounded-full border border-sky-300/60 dark:border-sky-700/60 text-sky-600 dark:text-sky-400 bg-sky-50/80 dark:bg-sky-900/20 hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors whitespace-nowrap">{algoMode} 란? 💡</button>
-            </div>
+          </div>
           </div>
         }
         scrollable={
           <div className="flex flex-col">
-            <div className={`px-4 py-2.5 font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-all duration-300 ${bannerClass}`}>{step.description}</div>
+            <div className={`px-4 py-2 flex items-center justify-center min-h-[42px] transition-all duration-300 relative ${bannerClass}`}>
+              <div className="font-medium text-sm text-center px-12">{step.description}</div>
+              <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${step.type === 'INIT' ? 'bg-sky-500/20 text-sky-600 dark:text-sky-400' : step.type === 'DONE' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : step.isImprovement ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400' : 'bg-muted text-muted-foreground'}`}>{step.type || (step.isImprovement ? 'UPDATE' : 'INIT')}</div>
+            </div>
             {algoMode === 'BFS' ? (
               <div className="flex flex-col divide-y divide-border">
                 <div className="w-full min-h-[280px] relative group">

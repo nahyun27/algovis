@@ -51,9 +51,9 @@ export default function CodeViewer({ codeLine, mode }: CodeViewerProps) {
   };
 
   return (
-    <div className="border rounded-xl bg-card shadow-sm overflow-hidden flex flex-col flex-shrink-0 max-h-[540px]">
+    <div className="flex flex-col flex-shrink-0 max-h-[540px] overflow-hidden">
       {/* Header */}
-      <div className="p-3 border-b bg-muted/30 flex items-center justify-between gap-2">
+      <div className="p-3 bg-muted/40 flex items-center justify-between gap-2">
         <h2 className="font-semibold tracking-tight text-sm truncate">
           Source Code (Python {mode})
         </h2>
