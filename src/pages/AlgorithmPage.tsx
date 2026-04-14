@@ -1313,11 +1313,16 @@ function SortingPage() {
             </div>
           </div>
         }
-        scrollable={
-          <div className="flex flex-col">
-            <div className={`px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>{step.description}</div>
-            <div className="min-h-[260px]"><SortingArrayCanvas step={step} /></div>
-            <div className="px-3 py-2 border-t bg-muted/20 flex flex-wrap items-center gap-2 text-xs">
+        editor={
+          <div className="flex flex-col h-full min-h-0">
+            {/* Banner */}
+            <div className={`shrink-0 px-4 py-2.5 border-b font-medium text-sm text-center min-h-[42px] flex items-center justify-center transition-colors ${bannerClass}`}>{step.description}</div>
+            {/* Array canvas — grows to fill all remaining space */}
+            <div className="flex-1 min-h-0 overflow-hidden">
+              <SortingArrayCanvas step={step} />
+            </div>
+            {/* Array controls */}
+            <div className="shrink-0 px-3 py-2 border-t bg-muted/20 flex flex-wrap items-center gap-2 text-xs">
               <button onClick={handleRandomArray} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold transition-colors">랜덤</button>
               <button onClick={handleReversed} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold transition-colors">역순</button>
               <button onClick={handleNearlySorted} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold transition-colors">거의 정렬</button>
@@ -1326,9 +1331,13 @@ function SortingPage() {
                 <button onClick={handleCustomInput} className="px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground font-semibold transition-colors hover:bg-primary/90">적용</button>
               </div>
             </div>
+            {/* Step controller fixed at bottom */}
+            <div className="shrink-0 border-t border-border/40">
+              {stepCtrl}
+            </div>
           </div>
         }
-        stepController={stepCtrl}
+        isEditorMode={true}
         rightPanel={<RightPanel><SortingCodeViewer codeLine={step.codeLine} algorithm={algorithm} /><SortingProblemList /></RightPanel>}
       />
       <SortAlgoModal isOpen={isAlgoModalOpen} onClose={() => setAlgoModalOpen(false)} onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); }} algorithm={algorithm} />

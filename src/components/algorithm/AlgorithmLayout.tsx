@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface AlgorithmLayoutProps {
   /** The fixed top header bar (title, buttons) */
@@ -43,10 +43,16 @@ export default function AlgorithmLayout({
       <div className="flex-1 flex flex-col lg:min-w-[600px] border border-border/40 rounded-2xl overflow-hidden bg-card/80 backdrop-blur-md text-card-foreground shadow-xl dark:shadow-[0_8px_30px_rgba(99,102,241,0.08)] min-h-0 h-full">
 
         {isEditorMode && editor ? (
-          /* Editor mode – fills the whole panel */
-          <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-            {editor}
-          </div>
+          /* Editor mode – header fixed, editor fills the rest */
+          <>
+            {/* ① Fixed Header */}
+            <div className="shrink-0 bg-muted/30 border-b border-border/40">
+              {header}
+            </div>
+            <div className="flex-1 overflow-hidden flex flex-col min-h-0">
+              {editor}
+            </div>
+          </>
         ) : (
           <>
             {/* ① Fixed Header */}
