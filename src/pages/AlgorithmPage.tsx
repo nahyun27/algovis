@@ -1041,13 +1041,6 @@ function KruskalPage() {
 
   /* ── Kruskal badge / banner ── */
   const kType = kStep.type as string;
-  const kruskalBadgeClass =
-    kType === 'REJECT'   ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700' :
-    kType === 'ACCEPT'   ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700' :
-    kType === 'FIND'     ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' :
-    kType === 'CONSIDER' ? 'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 border-sky-300 dark:border-sky-700' :
-    kType === 'DONE'     ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-700' :
-    'bg-muted text-muted-foreground border-border';
   const kruskalBannerClass =
     kType === 'REJECT' ? 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200' :
     kType === 'ACCEPT' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200' :
@@ -1056,13 +1049,6 @@ function KruskalPage() {
 
   /* ── Prim badge / banner ── */
   const pType = pStep.type as string;
-  const primBadgeClass =
-    pType === 'ADD_TO_MST'     ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700' :
-    pType === 'UPDATE'         ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700' :
-    pType === 'EXTRACT_MIN'    ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' :
-    pType === 'ALREADY_IN_MST' ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-700' :
-    pType === 'DONE'           ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-700' :
-    'bg-muted text-muted-foreground border-border';
   const primBannerClass =
     pType === 'ADD_TO_MST'     ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200' :
     pType === 'UPDATE'         ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200' :
@@ -1135,9 +1121,9 @@ function KruskalPage() {
             <div className={`px-4 py-2 flex items-center justify-center min-h-[42px] transition-all duration-300 relative ${tab === 'kruskal' ? kruskalBannerClass : primBannerClass}`}>
               <div className="font-medium text-sm text-center px-12">{tab === 'kruskal' ? kStep.description : pStep.description}</div>
               {tab === 'kruskal' ? (
-                <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${kStep.type === 'MST_EDGE' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : kStep.type === 'CYCLE' ? 'bg-red-500/20 text-red-600 dark:text-red-400' : 'bg-muted/60 text-muted-foreground'}`}>{kStep.type}</div>
+                <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${kStep.type === 'ACCEPT' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : kStep.type === 'REJECT' ? 'bg-red-500/20 text-red-600 dark:text-red-400' : 'bg-muted/60 text-muted-foreground'}`}>{kStep.type}</div>
               ) : (
-                <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${pStep.type === 'MST_EDGE' ? 'bg-sky-500/20 text-sky-600 dark:text-sky-400' : pStep.type === 'EXPLORE' ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400' : 'bg-muted/60 text-muted-foreground'}`}>{pStep.type}</div>
+                <div className={`absolute right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${pStep.type === 'ADD_TO_MST' ? 'bg-sky-500/20 text-sky-600 dark:text-sky-400' : pStep.type === 'UPDATE' ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400' : 'bg-muted/60 text-muted-foreground'}`}>{pStep.type}</div>
               )}
             </div>
             {tab === 'kruskal' ? (
