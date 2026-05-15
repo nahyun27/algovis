@@ -813,7 +813,7 @@ function AStarGridMode({ onTabChange }: { onTabChange: (mode: 'graph' | 'grid') 
 /* ─────────────── A* Wrapper (tabs) ─────────────── */
 
 function AStarPage() {
-  const [viewMode, setViewMode] = useState<'graph' | 'grid'>('graph');
+  const [viewMode, setViewMode] = useState<'graph' | 'grid'>('grid');
   return viewMode === 'graph'
     ? <AStarGraphMode onTabChange={setViewMode} />
     : <AStarGridMode  onTabChange={setViewMode} />;
