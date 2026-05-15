@@ -35,6 +35,13 @@ import AStarScoreTable  from '../algorithms/astar/ScoreTable';
 import AStarInfoModal   from '../algorithms/astar/InfoModal';
 import { generateAStarSteps } from '../algorithms/astar/solver';
 import type { AStarStep } from '../algorithms/astar/types';
+import GridCanvas       from '../algorithms/astar/GridCanvas';
+import GridAStarCodeViewer from '../algorithms/astar/GridCodeViewer';
+import GridAStarInfoModal  from '../algorithms/astar/GridInfoModal';
+import GridAStarProblemList from '../algorithms/astar/GridProblemList';
+import { generateGridAStarSteps, generateGridDijkstraSteps } from '../algorithms/astar/solverGrid';
+import type { GridStep, GridMap } from '../algorithms/astar/gridTypes';
+import { PRESETS, INF as GRID_INF, cloneWalls, randomMaze } from '../algorithms/astar/gridTypes';
 import { ASTAR_DEFAULT_GRAPH } from '../types/graph';
 
 // BFS/DFS
@@ -402,7 +409,11 @@ function computeAStarShortestEdges(steps: AStarStep[], upTo: number): [number, n
   return edges;
 }
 
-function AStarPage() {
+function AStarGraphMode({ onTabChange }: { onTabChange: (mode: 'graph' | 'grid') => void }) {
+  return <AStarGraphModeInner onTabChange={onTabChange} />;
+}
+
+function AStarGraphModeInner({ onTabChange }: { onTabChange: (mode: 'graph' | 'grid') => void }) {
   const [mode, setMode]                 = useState<PageMode>('example');
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isPlaying, setIsPlaying]       = useState(false);
@@ -476,7 +487,11 @@ function AStarPage() {
               <h2 className="font-semibold text-base lg:text-lg tracking-tight">A* (A-Star) 길찾기 시각화</h2>
               <button onClick={() => setIsModalOpen(true)} className="text-xs font-semibold px-2.5 py-1 rounded-full border border-purple-300/60 dark:border-purple-700/60 text-purple-600 dark:text-purple-400 bg-purple-50/80 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors">A*란? 💡</button>
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex bg-muted/40 p-1 rounded-xl gap-0.5">
+                <button onClick={() => onTabChange('graph')} className="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all bg-background dark:bg-card shadow-sm text-purple-600 dark:text-purple-400">그래프 모드</button>
+                <button onClick={() => onTabChange('grid')} className="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-muted-foreground hover:text-foreground">격자 모드</button>
+              </div>
               {mode === 'editor' && (
                 <button onClick={() => setMode('example')} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-muted/50 text-muted-foreground hover:text-foreground transition-all"><ArrowLeft size={14} />시각화로 돌아가기</button>
               )}
@@ -531,6 +546,277 @@ function AStarPage() {
       <AStarInfoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); setMode('example'); }} />
     </>
   );
+}
+
+/* ─────────────── A* Grid Mode ─────────────── */
+
+type GridTool = 'wall' | 'erase' | 'start' | 'goal';
+
+function AStarGridMode({ onTabChange }: { onTabChange: (mode: 'graph' | 'grid') => void }) {
+  const [map, setMap] = useState<GridMap>(() => ({ ...PRESETS.basic, walls: cloneWalls(PRESETS.basic.walls) }));
+  const [tool, setTool] = useState<GridTool>('wall');
+  const [showScores, setShowScores] = useState(false);
+  const [showCompare, setShowCompare] = useState(false);
+
+  const [currentStepIdx, setCurrentStepIdx] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [speed, setSpeed] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const steps = useMemo<GridStep[]>(() => generateGridAStarSteps(map), [map]);
+  const dijkstraSteps = useMemo<GridStep[]>(() => showCompare ? generateGridDijkstraSteps(map) : [], [map, showCompare]);
+
+  const step = steps[currentStepIdx] ?? steps[0];
+  const dijkstraStep = dijkstraSteps[dijkstraSteps.length - 1] ?? null;
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    if (currentStepIdx >= steps.length - 1) {
+      const t = window.setTimeout(() => setIsPlaying(false), 0);
+      return () => clearTimeout(t);
+    }
+    const t = window.setTimeout(() => setCurrentStepIdx(p => p + 1), 1000 / speed);
+    return () => clearTimeout(t);
+  }, [isPlaying, currentStepIdx, steps.length, speed]);
+
+  /* ── Edit handlers ── */
+  const applyTool = (r: number, c: number) => {
+    setMap(prev => {
+      const walls = cloneWalls(prev.walls);
+      let { start, goal } = prev;
+      if (tool === 'wall') {
+        if (!(r === start.r && c === start.c) && !(r === goal.r && c === goal.c)) walls[r][c] = true;
+      } else if (tool === 'erase') {
+        walls[r][c] = false;
+      } else if (tool === 'start') {
+        if (!walls[r][c] && !(r === goal.r && c === goal.c)) start = { r, c };
+      } else if (tool === 'goal') {
+        if (!walls[r][c] && !(r === start.r && c === start.c)) goal = { r, c };
+      }
+      return { ...prev, walls, start, goal };
+    });
+    setCurrentStepIdx(0);
+    setIsPlaying(false);
+  };
+
+  const handleMouseDown = (r: number, c: number) => {
+    setIsDragging(true);
+    applyTool(r, c);
+  };
+  const handleMouseEnter = (r: number, c: number) => {
+    if (isDragging && (tool === 'wall' || tool === 'erase')) applyTool(r, c);
+  };
+  const handleMouseUp = () => setIsDragging(false);
+
+  const loadPreset = (key: keyof typeof PRESETS) => {
+    setMap({ ...PRESETS[key], walls: cloneWalls(PRESETS[key].walls) });
+    setCurrentStepIdx(0);
+    setIsPlaying(false);
+  };
+
+  const handleRandom = () => {
+    setMap(randomMaze(10, 10, 0.28));
+    setCurrentStepIdx(0);
+    setIsPlaying(false);
+  };
+
+  const handleReset = () => {
+    setMap(prev => ({ ...prev, walls: prev.walls.map(row => row.map(() => false)) }));
+    setCurrentStepIdx(0);
+    setIsPlaying(false);
+  };
+
+  const bannerClass =
+    step.type === 'DONE'      ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200' :
+    step.type === 'NO_PATH'   ? 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200' :
+    step.type === 'RELAX'     ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-800 dark:text-orange-200' :
+    step.type === 'DEQUEUE'   ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300' :
+    'bg-zinc-100 dark:bg-accent/50 text-zinc-700 dark:text-muted-foreground';
+
+  const cur = step.currentCell;
+  const curG = cur ? step.g[cur.r][cur.c] : GRID_INF;
+  const curH = cur ? step.h[cur.r][cur.c] : 0;
+  const curF = cur ? step.f[cur.r][cur.c] : GRID_INF;
+
+  const stepCtrl = (
+    <StepController
+      currentStep={currentStepIdx} totalSteps={steps.length} isPlaying={isPlaying} speed={speed} onSpeedChange={setSpeed}
+      onPlayPause={() => setIsPlaying(p => !p)}
+      onNext={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.min(steps.length - 1, p + 1)); }}
+      onPrev={() => { setIsPlaying(false); setCurrentStepIdx(p => Math.max(0, p - 1)); }}
+      onFirst={() => { setIsPlaying(false); setCurrentStepIdx(0); }}
+      onLast={() => { setIsPlaying(false); setCurrentStepIdx(steps.length - 1); }}
+    />
+  );
+
+  return (
+    <>
+      <AlgorithmLayout
+        header={
+          <div className="px-4 py-3 flex justify-between items-center flex-wrap gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="font-semibold text-base lg:text-lg tracking-tight">A* 격자 길찾기</h2>
+              <button onClick={() => setIsModalOpen(true)}
+                className="text-xs font-semibold px-2.5 py-1 rounded-full border border-purple-300/60 dark:border-purple-700/60 text-purple-600 dark:text-purple-400 bg-purple-50/80 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors">
+                A*란? 💡
+              </button>
+            </div>
+            <div className="flex items-center gap-4 flex-wrap">
+              <div className="flex items-center gap-2 text-xs">
+                <span className="font-mono bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 px-2 py-0.5 rounded border border-orange-200 dark:border-orange-800">
+                  탐색: {step.nodesExplored}
+                </span>
+                {showCompare && dijkstraStep && (
+                  <span className="font-mono bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 px-2 py-0.5 rounded border border-violet-200 dark:border-violet-800">
+                    다익스트라: {dijkstraStep.nodesExplored}
+                  </span>
+                )}
+              </div>
+              <div className="flex bg-muted/40 p-1 rounded-xl gap-0.5">
+                <button onClick={() => onTabChange('graph')} className="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-muted-foreground hover:text-foreground">그래프 모드</button>
+                <button onClick={() => onTabChange('grid')} className="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all bg-background dark:bg-card shadow-sm text-purple-600 dark:text-purple-400">격자 모드</button>
+              </div>
+            </div>
+          </div>
+        }
+        scrollable={
+          <div className="flex flex-col">
+            {/* Banner */}
+            <div className={`px-4 py-2 flex items-center justify-center min-h-[42px] transition-all duration-300 relative ${bannerClass}`}>
+              <div className="font-medium text-sm text-center px-12">{step.description}</div>
+            </div>
+
+            {/* Main: Grid + Controls */}
+            <div className="flex-1 flex flex-col p-3 sm:p-4 gap-3">
+              {/* Grid canvas */}
+              <div className="flex justify-center">
+                <GridCanvas
+                  map={map}
+                  step={step}
+                  showScores={showScores}
+                  editable
+                  onCellMouseDown={handleMouseDown}
+                  onCellMouseEnter={handleMouseEnter}
+                  onCellMouseUp={handleMouseUp}
+                />
+              </div>
+
+              {/* Editor toolbar */}
+              <div className="flex flex-wrap gap-1.5 items-center justify-center text-xs">
+                {([
+                  { id: 'wall',  label: '🧱 벽',     cls: 'bg-zinc-700 text-white' },
+                  { id: 'erase', label: '🧽 지우개', cls: 'bg-zinc-300 dark:bg-zinc-600 text-foreground' },
+                  { id: 'start', label: '🟢 출발',   cls: 'bg-emerald-500 text-white' },
+                  { id: 'goal',  label: '🔴 목표',   cls: 'bg-rose-500 text-white' },
+                ] as const).map(t => (
+                  <button key={t.id}
+                    onClick={() => setTool(t.id as GridTool)}
+                    className={`px-2.5 py-1.5 rounded-md font-semibold transition-all ${
+                      tool === t.id ? `${t.cls} shadow-md scale-105` : 'bg-card border hover:bg-muted'
+                    }`}
+                  >{t.label}</button>
+                ))}
+                <div className="w-px h-5 bg-border mx-1" />
+                <button onClick={handleReset} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold">초기화</button>
+                <button onClick={handleRandom} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold">랜덤 미로</button>
+                <div className="w-px h-5 bg-border mx-1" />
+                <button onClick={() => loadPreset('basic')} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold">기본</button>
+                <button onClick={() => loadPreset('maze')}  className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold">미로</button>
+                <button onClick={() => loadPreset('empty')} className="px-2.5 py-1.5 rounded-md bg-card border hover:bg-muted font-semibold">빈격자</button>
+                <div className="w-px h-5 bg-border mx-1" />
+                <label className="flex items-center gap-1.5 px-2 py-1 cursor-pointer">
+                  <input type="checkbox" checked={showScores} onChange={e => setShowScores(e.target.checked)} className="w-3.5 h-3.5 accent-primary" />
+                  <span className="font-semibold">g/f 표시</span>
+                </label>
+                <label className="flex items-center gap-1.5 px-2 py-1 cursor-pointer">
+                  <input type="checkbox" checked={showCompare} onChange={e => setShowCompare(e.target.checked)} className="w-3.5 h-3.5 accent-primary" />
+                  <span className="font-semibold">다익스트라 비교</span>
+                </label>
+              </div>
+
+              {/* Score + PQ */}
+              <div className="flex flex-col sm:flex-row gap-2.5">
+                {/* Current cell score */}
+                <div className="flex-1 border rounded-lg bg-muted/20 p-2.5">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">현재 셀</p>
+                  {cur ? (
+                    <div className="font-mono text-xs flex items-center gap-3">
+                      <span>({cur.r},{cur.c})</span>
+                      <span className="text-emerald-600 dark:text-emerald-400">g={curG >= GRID_INF ? '∞' : curG}</span>
+                      <span className="text-blue-600 dark:text-blue-400">h={curH >= GRID_INF ? '∞' : curH}</span>
+                      <span className="text-purple-600 dark:text-purple-400 font-bold">f={curF >= GRID_INF ? '∞' : curF}</span>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-muted-foreground italic">대기 중...</p>
+                  )}
+                </div>
+
+                {/* PQ top 5 */}
+                <div className="flex-1 border rounded-lg bg-muted/20 p-2.5">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">우선순위 큐 (상위 5)</p>
+                  <div className="flex flex-wrap gap-1">
+                    {step.openSet.length === 0 ? (
+                      <span className="text-xs text-muted-foreground italic">비어있음</span>
+                    ) : step.openSet.slice(0, 5).map((p, i) => {
+                      const fv = step.f[p.r][p.c];
+                      return (
+                        <span key={`${p.r}-${p.c}-${i}`} className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
+                          i === 0
+                            ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-bold'
+                            : 'bg-card border text-muted-foreground'
+                        }`}>
+                          f{fv >= GRID_INF ? '∞' : fv}·({p.r},{p.c})
+                        </span>
+                      );
+                    })}
+                    {step.openSet.length > 5 && (
+                      <span className="text-[10px] text-muted-foreground/60 px-1">+{step.openSet.length - 5}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Comparison */}
+              {showCompare && dijkstraStep && step.type === 'DONE' && (
+                <div className="border rounded-lg bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-purple-200 dark:border-purple-800 p-3 text-center">
+                  <p className="text-xs font-bold text-purple-700 dark:text-purple-300">
+                    A*: {step.nodesExplored}개 / 다익스트라: {dijkstraStep.nodesExplored}개
+                    {dijkstraStep.nodesExplored > 0 && (
+                      <span className="ml-2 text-emerald-600 dark:text-emerald-400">
+                        → A*가 {Math.round((1 - step.nodesExplored / dijkstraStep.nodesExplored) * 100)}% 더 효율적
+                      </span>
+                    )}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        }
+        stepController={stepCtrl}
+        rightPanel={
+          <RightPanel>
+            <GridAStarCodeViewer codeLine={step.codeLine} />
+            <GridAStarProblemList />
+          </RightPanel>
+        }
+      />
+      <GridAStarInfoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onStartVisualization={() => { setCurrentStepIdx(0); setIsPlaying(true); }}
+      />
+    </>
+  );
+}
+
+/* ─────────────── A* Wrapper (tabs) ─────────────── */
+
+function AStarPage() {
+  const [viewMode, setViewMode] = useState<'graph' | 'grid'>('graph');
+  return viewMode === 'graph'
+    ? <AStarGraphMode onTabChange={setViewMode} />
+    : <AStarGridMode  onTabChange={setViewMode} />;
 }
 
 /* ─────────────── BFS/DFS Page ─────────────── */

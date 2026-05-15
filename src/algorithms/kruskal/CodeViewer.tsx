@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Maximize2 } from 'lucide-react';
+import CodeModal from '../../components/algorithm/CodeModal';
 import { KRUSKAL_CODE } from './types';
 
 /*
@@ -32,6 +33,7 @@ interface Props {
 
 export default function KruskalCodeViewer({ codeLine }: Props) {
   const [copied, setCopied] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleCopy = async () => {
     try { await navigator.clipboard.writeText(KRUSKAL_CODE); }
@@ -47,10 +49,21 @@ export default function KruskalCodeViewer({ codeLine }: Props) {
   };
 
   return (
-    <div className="flex flex-col flex-shrink-0 max-h-[540px] overflow-hidden">
+    <>
+      <div className="flex flex-col flex-shrink-0 max-h-[540px] overflow-hidden">
       <div className="p-3 bg-muted/40 flex items-center justify-between gap-2">
         <h2 className="font-semibold tracking-tight text-sm truncate">Source Code (Kruskal + Union-Find)</h2>
+        <div className="flex items-center gap-1.5 shrink-0">
         <button
+          onClick={() => setIsExpanded(true)}
+          className="flex items-center justify-center w-7 h-7 rounded-md border bg-card hover:bg-muted/60 text-muted-foreground hover:text-foreground border-border transition-all shrink-0"
+          title="코드 확대"
+          aria-label="코드 확대"
+        >
+          <Maximize2 className="w-3 h-3" />
+        </button>
+        </div>
+                <button
           onClick={handleCopy}
           className={`flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-md border transition-all shrink-0 ${
             copied
@@ -84,5 +97,14 @@ export default function KruskalCodeViewer({ codeLine }: Props) {
         </SyntaxHighlighter>
       </div>
     </div>
+      <CodeModal
+        isOpen={isExpanded}
+        onClose={() => setIsExpanded(false)}
+        code={KRUSKAL_CODE}
+        title="Source Code (Kruskal + Union-Find)"
+        isLineHighlighted={(line) => isHighlighted(line, codeLine)}
+        highlightColor="#22c55e"
+      />
+    </>
   );
 }

@@ -4,7 +4,9 @@
       "Bash(npx tsc:*)",
       "Bash(npm run:*)",
       "Bash(grep -E \"\\\\.\\(ts|tsx\\)$\")",
-      "Bash(grep -E \"\\\\.\\(js|ts|json|html\\)$\")"
+      "Bash(grep -E \"\\\\.\\(js|ts|json|html\\)$\")",
+      "Bash(sed -i '' 's/code={FLOYD_CODE}/code={FW_CODE}/' /Users/kimnahyun/github/algovis/src/algorithms/floydwarshall/CodeViewer.tsx)",
+      "Bash(sed -i '' 's/code={code}/code={codeStr}/' /Users/kimnahyun/github/algovis/src/algorithms/tsp/CodeViewer.tsx)"
     ]
   }
 }
